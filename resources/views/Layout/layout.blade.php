@@ -150,7 +150,7 @@ $sessionoficina=session('sessionoficina');
               <!-- User profile and search -->
               <!-- ============================================================== -->
               <li class="nav-item dropdown">
-              <b>BIENVENIDO(A):</b>{{$sessionusuario}} - 
+              <b>BIENVENIDO(A):</b>{{$sessionusuario}} -
               <b>OFICINA:</b>{{$nombreoficina}}
                 <a
                   class="
@@ -205,7 +205,7 @@ $sessionoficina=session('sessionoficina');
           <!-- Sidebar navigation-->
           <nav class="sidebar-nav">
             <ul id="sidebarnav" class="pt-4">
-             
+
               <li class="sidebar-item">
                 <a
                   class="sidebar-link waves-effect waves-dark sidebar-link"
@@ -213,6 +213,15 @@ $sessionoficina=session('sessionoficina');
                   aria-expanded="false"
                   ><i class="mdi mdi-chart-bar"></i
                   ><span class="hide-menu"> DASHBOARD</span></a
+                >
+              </li>
+              <li class="sidebar-item">
+                <a
+                  class="sidebar-link waves-effect waves-dark sidebar-link"
+                  href="/google-drive"
+                  aria-expanded="false"
+                  ><i class="mdi mdi-google-drive"></i
+                  ><span class="hide-menu"> GOOGLE DRIVE</span></a
                 >
               </li>
 
@@ -301,7 +310,7 @@ $sessionoficina=session('sessionoficina');
                     >
                   </li>
                 </ul>
-              </li>     
+              </li>
               <li class="sidebar-item" @if($sessionoficina=="RUAT") style="display:;" @else style="display:none;" @endif>
                 <a
                   class="sidebar-link has-arrow waves-effect waves-dark"
@@ -382,7 +391,7 @@ $sessionoficina=session('sessionoficina');
                   </li>
                 </ul>
               </li>
-              
+
               <!-- <li class="sidebar-item">
                 <a
                   class="sidebar-link has-arrow waves-effect waves-dark"
@@ -400,7 +409,7 @@ $sessionoficina=session('sessionoficina');
                   </li>
                 </ul>
               </li> -->
-              
+
               <li class="sidebar-item">
                 <a
                   class="sidebar-link has-arrow waves-effect waves-dark"
@@ -418,7 +427,7 @@ $sessionoficina=session('sessionoficina');
                   </li>
                 </ul>
               </li>
-             
+
               <li class="sidebar-item">
                 <a
                   class="sidebar-link has-arrow waves-effect waves-dark"
@@ -458,7 +467,7 @@ $sessionoficina=session('sessionoficina');
                       ><span class="hide-menu"> ROLES </span></a
                     >
                   </li>
-                  
+
                 </ul>
               </li>
               <li class="sidebar-item">
@@ -476,7 +485,7 @@ $sessionoficina=session('sessionoficina');
                       ><span class="hide-menu"> CERRAR SESION </span></a
                     >
                   </li>
-                  
+
                 </ul> -->
               </li>
             </ul>
@@ -492,7 +501,7 @@ $sessionoficina=session('sessionoficina');
       <!-- Page wrapper  -->
       <!-- ============================================================== -->
       <div class="page-wrapper">
-        <section class="content"> 
+        <section class="content">
           @include('sweetalert::alert')
           @yield('content')
         </section>

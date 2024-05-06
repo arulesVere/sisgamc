@@ -25,6 +25,7 @@ use App\Http\Controllers\CRuat;
 use App\Http\Controllers\CFinanzas;
 use App\Http\Controllers\CUrbanismo;
 use App\Http\Controllers\CVehiculo;
+use App\Http\Controllers\CGoogleDrive;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -100,6 +101,7 @@ Route::resource('/Estante',CEstante::class);
 Route::resource('/Ruat',CRuat::class);
 
 Route::resource('/Vehiculo',CVehiculo::class);
+Route::resource('/google-drive', CGoogleDrive::class);
 
 Route::post('reporterangofecha', [CReporte::class, 'reporterangofecha'])->name('reporterangofecha');
 Route::get('vistareportetipotramite', [CReporte::class, 'vistareportetipotramite'])->name('vistareportetipotramite');

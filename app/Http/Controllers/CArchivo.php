@@ -20,9 +20,9 @@ class CArchivo extends Controller
      */
     public function index()
     {
-        
+
         $sessionidfolder=session('sessionidfolder');
-        $allarchivo='SELECT * FROM colcapir_bddsisgamc.archivo a WHERE a.estado=1 AND a.idfolder="'. $sessionidfolder.'" ORDER BY a.nombre ASC';
+        $allarchivo='SELECT * FROM colcapir_bddsisgamc.archivo a WHERE a.estado=1 AND a.idempastado="'. $sessionidfolder.'" ORDER BY a.nombre ASC';
         $queryarchivo=DB::select($allarchivo);
         return view('Archivo.index',['queryarchivo'=>$queryarchivo]);
     }
@@ -49,24 +49,24 @@ class CArchivo extends Controller
         $sessionidfolder=session('sessionidfolder');
 
         $queryoficial=DB::select('SELECT p.idpersona,CONCAT(p.papellido," ",IFNULL(p.sapellido," ")," ",p.nombre) AS nombrecompleto,o.idoficina,o.nombre AS oficina
-        FROM colcapir_bddsisgamc.persona p 
-        INNER JOIN colcapir_bddsisgamc.oficina o ON p.idoficina=o.idoficina 
+        FROM colcapir_bddsisgamc.persona p
+        INNER JOIN colcapir_bddsisgamc.oficina o ON p.idoficina=o.idoficina
         WHERE p.estado=1 AND p.idpersona="'.$sessionidusuario.'"');
 
         $queryfolder=DB::select('SELECT f.idfolder,f.numero AS folder,f.idtramite,t.nombre FROM colcapir_bddsisgamc.folder f
         INNER JOIN colcapir_bddsisgamc.tramite t ON f.idtramite=t.idtramite WHERE f.estado=1 AND f.idfolder="'. $sessionidfolder.'"');
-    
+
         $nombrecompleto=$queryoficial[0]->nombrecompleto;
         $nombreoficina=$queryoficial[0]->oficina;
-        $nombrefolder=$queryfolder[0]->folder;
+        $nombrefolder=$queryfolder[0]->empastado;
         $nombretramite=$queryfolder[0]->nombre;
-        
+
         $ruta='SELECT ruta FROM colcapir_bddsisgamc.config';
         $queryruta=DB::select($ruta);
-        $directorio=$queryruta[0]->ruta.$nombreoficina; 
+        $directorio=$queryruta[0]->ruta.$nombreoficina;
 
         if(request()->hasFile('txtfile'))
-        { 
+        {
             $archivo=new Archivo();
             $file=$request->file('txtfile');
             $nombre=$file->getClientOriginalName();
@@ -94,7 +94,7 @@ class CArchivo extends Controller
         }
         else{
             Alert::warning('ADVERTENCIA', 'CARGAR RESPALDO');
-        } 
+        }
     }
     /**
      * Display the specified resource.
@@ -139,13 +139,13 @@ class CArchivo extends Controller
     public function destroy($idarchivo)
     {
         $verarchivo=DB::select('SELECT f.idfolder,o.nombre AS oficina,CONCAT(p.papellido," ",IFNULL(p.sapellido," ")," ",p.nombre) AS nombrecompleto,
-        f.numero AS folder, f.estado AS folderestado, a.idarchivo AS idarchivo,a.nombre AS nombrearchivo,a.tipo AS tipo,a.estado AS archivoestado 
-        FROM colcapir_bddsisgamc.folder f 
-        INNER JOIN colcapir_bddsisgamc.archivo a ON f.idfolder=a.idfolder 
+        f.numero AS folder, f.estado AS folderestado, a.idarchivo AS idarchivo,a.nombre AS nombrearchivo,a.tipo AS tipo,a.estado AS archivoestado
+        FROM colcapir_bddsisgamc.folder f
+        INNER JOIN colcapir_bddsisgamc.archivo a ON f.idfolder=a.idfolder
         INNER JOIN colcapir_bddsisgamc.persona p ON p.idpersona=f.idpersona
         INNER JOIN colcapir_bddsisgamc.oficina o ON o.idoficina=p.idoficina
         WHERE a.idarchivo="'.$idarchivo.'"');
-        
+
         $nombrefolder=$verarchivo[0]->folder;
         $nombrearchivo=$verarchivo[0]->nombrearchivo;
         $tipoarchivo=$verarchivo[0]->tipo;
@@ -154,7 +154,7 @@ class CArchivo extends Controller
 
         $ruta='SELECT ruta FROM colcapir_bddsisgamc.config';
         $queryruta=DB::select($ruta);
-        $directorio=$queryruta[0]->ruta.$oficina; 
+        $directorio=$queryruta[0]->ruta.$oficina;
 
         $visualizar=$directorio.'/'.$usuario.'/'.$nombrefolder.'/'.$nombrearchivo;
         $vistaduplicado=$directorio.'/'.$usuario.'/'.'DUPLICADO DE PLACA'.'/'.$nombrefolder.'/'.$nombrearchivo;
@@ -207,13 +207,13 @@ class CArchivo extends Controller
     {
         $verarchivo=DB::select('SELECT f.idfolder,o.nombre AS oficina,CONCAT(p.papellido," ",IFNULL(p.sapellido," ")," ",p.nombre) AS nombrecompleto,
         f.numero AS folder, f.estado AS folderestado, a.idarchivo AS idarchivo,a.nombre AS nombrearchivo,a.tipo AS tipo,a.estado AS archivoestado, t.nombre AS tramite
-        FROM colcapir_bddsisgamc.folder f 
-        INNER JOIN colcapir_bddsisgamc.archivo a ON f.idfolder=a.idfolder 
+        FROM colcapir_bddsisgamc.folder f
+        INNER JOIN colcapir_bddsisgamc.archivo a ON f.idfolder=a.idfolder
         INNER JOIN colcapir_bddsisgamc.persona p ON p.idpersona=f.idpersona
         INNER JOIN colcapir_bddsisgamc.oficina o ON o.idoficina=p.idoficina
         INNER JOIN colcapir_bddsisgamc.tramite t ON t.idtramite=f.idtramite
         WHERE a.idarchivo="'.$idarchivo.'"');
-    
+
 
         $nombrefolder=$verarchivo[0]->folder;
         $nombretramite=$verarchivo[0]->tramite;
@@ -237,7 +237,7 @@ class CArchivo extends Controller
             if (file_exists($vistaduplicado)){
                 return response()->file($vistaduplicado);
            }
-           
+
         }
         else if($nombretramite=="PREESCRIPCION")
         {
@@ -280,22 +280,22 @@ class CArchivo extends Controller
             }
         }
         //return Response::view($visualizar)->header('Content-Type', $type);
-        
+
        // return Response::make($visualizar);
         //return Response::view($visualizar)->header('Content-Type', $type);
-       
+
     }
     public function download($idarchivo)
     {
         $verarchivo=DB::select('SELECT f.idfolder,o.nombre AS oficina,CONCAT(p.papellido," ",IFNULL(p.sapellido," ")," ",p.nombre) AS nombrecompleto,
         f.numero AS folder, f.estado AS folderestado, a.idarchivo AS idarchivo,a.nombre AS nombrearchivo,a.tipo AS tipo,a.estado AS archivoestado,t.nombre AS tramite
-        FROM colcapir_bddsisgamc.folder f 
-        INNER JOIN colcapir_bddsisgamc.archivo a ON f.idfolder=a.idfolder 
+        FROM colcapir_bddsisgamc.folder f
+        INNER JOIN colcapir_bddsisgamc.archivo a ON f.idfolder=a.idfolder
         INNER JOIN colcapir_bddsisgamc.persona p ON p.idpersona=f.idpersona
         INNER JOIN colcapir_bddsisgamc.oficina o ON o.idoficina=p.idoficina
         INNER JOIN colcapir_bddsisgamc.tramite t ON t.idtramite=f.idtramite
         WHERE a.idarchivo="'.$idarchivo.'"');
-    
+
 
         $nombrefolder=$verarchivo[0]->folder;
         $nombrearchivo=$verarchivo[0]->nombrearchivo;
@@ -314,8 +314,8 @@ class CArchivo extends Controller
         $vistahojaruta=$directorio.'/'.$usuario.'/'.'HOJA DE RUTA'.'/'.$nombrefolder.'/'.$nombrearchivo;
         $visualizar=$directorio.'/'.$usuario.'/'.$nombrefolder.'/'.$nombrearchivo;
         //echo $visualizar;
-       
-       
+
+
         if ($tipoarchivo=='pdf') {
             $headers = ['Content-Type: application/pdf'];
             $fileName = $nombrearchivo.'.pdf';
@@ -352,12 +352,12 @@ class CArchivo extends Controller
 
         $ruta="SELECT ruta FROM colcapir_bddsisgamc.config";
         $queryruta=DB::select($ruta);
-        $directorio=$queryruta[0]->ruta; 
+        $directorio=$queryruta[0]->ruta;
 
         $filePath = $directorio."/".('PRUEBA')."/".('vero.pdf');
-      
-  
+
+
     } */
 
-    
+
 }

@@ -81,8 +81,9 @@ class CVehiculo extends Controller
         }
     }
 
-    public function index()
+    public function index(Request $request)
     {
+
         $allvehiculo = DB::SELECT('SELECT e.idempastado,e.codigo,e.numero,e.fecha,e.condicion,t.nombre,est.nombre,p.pasillo,v.carpetas,
         v.total,v.certificaciones,v.placas,v.fechasingreso
         FROM colcapir_bddsisgamc.empastado e
@@ -160,7 +161,7 @@ class CVehiculo extends Controller
         $vehiculo->save();
         // crear carpetas y subcarpetas
 
-
+        return redirect('/Vehiculo');
     }
 
     /**

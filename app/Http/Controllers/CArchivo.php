@@ -20,9 +20,9 @@ class CArchivo extends Controller
      */
     public function index()
     {
-
+        $empastadoId = request()->query('idempastado');
         $sessionidfolder=session('sessionidfolder');
-        $allarchivo='SELECT * FROM colcapir_bddsisgamc.archivo a WHERE a.estado=1 AND a.idempastado="'. $sessionidfolder.'" ORDER BY a.nombre ASC';
+        $allarchivo='SELECT * FROM colcapir_bddsisgamc.archivo a WHERE a.estado=1 AND a.idempastado="'. $empastadoId.'" ORDER BY a.nombre ASC';
         $queryarchivo=DB::select($allarchivo);
         return view('Archivo.index',['queryarchivo'=>$queryarchivo]);
     }

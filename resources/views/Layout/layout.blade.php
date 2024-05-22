@@ -326,12 +326,12 @@ $sessionoficina=session('sessionoficina');
                       ><span class="hide-menu"> GESTIONAR </span></a
                     >
                   </li>
-                 <!--  <li class="sidebar-item">
-                    <a href="/Hojaruta" class="sidebar-link"
+                 <li class="sidebar-item">
+                    <a href="/Vehiculo" class="sidebar-link"
                       ><i class="mdi mdi-file-outline"></i
-                      ><span class="hide-menu"> HOJA DE RUTA </span></a
+                      ><span class="hide-menu"> VEHICULO </span></a
                     >
-                  </li> -->
+                  </li>
                 </ul>
               </li>
                 <!-- <ul aria-expanded="false" class="collapse first-level">

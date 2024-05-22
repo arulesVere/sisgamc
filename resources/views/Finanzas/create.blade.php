@@ -1,184 +1,187 @@
-<?php
-$sessionusuario=session('sessionusuario');
-$nombreoficina=session('sessionoficina');
-$sessionidusuario=session('sessionidusuario');
-?>
-<!-- Modal -->
-<div class="modal fade" id="finanzasModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog  modal-xl">
-   <form class="form-horizontal" action="/Finanzas" method="Post" >
-    @csrf  
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">NUEVO REGISTRO / FINANZAS</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-      <div class="card">
-        <div class="card-body">
-            <div class="form-group row">
-                <label
-                for="cono1"
-                class="col-sm-3 text-end control-label col-form-label"
-                >Nº CARPETA</label
-                >
-                <div class="col-sm-3">
-                  <input
-                      type="number"
-                      class="form-control"
-                      id="fname" name="txtnumero"
-                      placeholder="INGRESE NUMERO CARPETA"
-                      required=""
-                  />
-                </div>
-                <label
-                for="cono1"
-                class="col-sm-3 text-end control-label col-form-label"
-                >Nº HOJAS EN CARPETA</label
-                >
-                <div class="col-sm-3">
-                <input
-                    type="number"
-                    class="form-control"
-                    id="fname" name="txthoja"
-                    placeholder="INGRESE NUMERO DE HOJAS"
-                    required=""
-                />
-                </div>
+@extends('Layout.layout')
+@section('content')
+        <div class="page-breadcrumb">
+          <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+              <h4 class="page-title">NUEVO REGISTRO</h4>
+              <div class="ms-auto text-end">
+                <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Finanzas</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                    Edicion
+                    </li>
+                  </ol>
+                </nav>
+              </div>
             </div>
-            
-            <div class="form-group row">
-                <label
-                for="fname"
-                class="col-sm-3 text-end control-label col-form-label"
-                >FECHA INICIO:</label
-                >
-                <div class="col-sm-3">
-                  <input
-                      type="date"
-                      class="form-control"
-                      id="FechaActual" name="txtinicio"
-                      placeholder="INGRESE FECHA INICIO"
-                  />
-                </div>
-                 <label
-                for="fname"
-                class="col-sm-3 text-end control-label col-form-label"
-                >NRO. COMPROBANTES:</label
-                >
-                <div class="col-sm-3">
-                 <input
-                      type="text"
-                      class="form-control"
-                      id="fname" name="txtcomprobante"
-                      placeholder="INGRESE NRO. COMPROBANTES"
-                      required=""
-                  />
-                </div> 
-                <!--
-                <label
-                for="fname"
-                class="col-sm-3 text-end control-label col-form-label"
-                >FECHA FIN:</label
-                >
-                <div class="col-sm-3">
-                  <input
-                      type="date"
-                      class="form-control"
-                      id="fname" name="txtfin"
-                      placeholder="INGRESE FECHA FIN"
-                  />
-                </div>-->
-            </div>
-            <div class="form-group row">
-                 <label
-                for="fname"
-                class="col-sm-3 text-end control-label col-form-label"
-                >UBICADO EN:</label
-                >
-                <div class="col-sm-3">
-                  <select
-                        class="select2 form-select shadow-none"
-                        style="width: 100%; height: 36px" name="cbxestante" required="">
-                          <option selected="" disabled="" value="">SELECCIONE UNA OPCION</option>
-                          @foreach($querybyestante as $qe)
-                          <option value="{{$qe->idestante}}">{{$qe->estante}}</option>
-                          @endforeach
-                  </select>
-                </div> 
-                <label
-                for="fname"
-                class="col-sm-3 text-end control-label col-form-label"
-                >TIPO SOLICITUD:</label
-                >
-                <div class="col-sm-3">
-                  <select
-                          class="select2 form-select shadow-none"
-                          style="width: 100%; height: 36px" name="cbxtramite" required="">
-                            <option selected="" disabled="" value="">SELECCIONE UNA OPCION</option>
-                            @foreach($querytramite as $qt)
-                            <option value="{{$qt->idtramite}}">{{$qt->nombre}}</option>
-                            @endforeach
-                  </select>
-                </div>
-            </div>
-            <!--
-            <div class="form-group row">
-                 <label
-                for="fname"
-                class="col-sm-3 text-end control-label col-form-label"
-                >FECHA COMPROBANTE :</label
-                >
-                <div class="col-sm-3">
-                 <input
-                      type="text"
-                      class="form-control"
-                      id="fname" name="txtfecha"
-                      placeholder="INGRESE FECHA COMPROBANTE"
-                      required=""
-                  />
-                </div> 
-                
-            </div>
-            
-            <div class="form-group row">
-                 <label
-                for="fname"
-                class="col-sm-3 text-end control-label col-form-label"
-                >GESTIÓN :</label
-                >
-                <div class="col-sm-3">
-                 <input
-                      type="text"
-                      class="form-control"
-                      id="fname" name="txtgestion"
-                      placeholder="INGRESE GESTIÓN"
-                      required=""
-                  />
-                </div> 
-            </div>
-            -->
-              <!--FIN FINANZAS -->
+          </div>
         </div>
+        <!-- ============================================================== -->
+        <!-- End Bread crumb and right sidebar toggle -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Container fluid  -->
+        <!-- ============================================================== -->
+        <div class="container-fluid">
+          <!-- ============================================================== -->
+          <!-- Start Page Content -->
+          <!-- ============================================================== -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+              <form class="form-horizontal" action="/Finanzas" method="Post" >
+                @csrf  
+                  <div class="card-body">
+                    <h4 class="card-title">INGRESE DATOS:</h4>
+                    <div class="form-group row">
+                      <label
+                        for="fname"
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >NÚMERO DE TOMO:</label
+                      >
+                      <div class="col-sm-6">
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="fname"
+                          placeholder="N° TOMO" name="txtnumero"
+                        />
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label
+                        for="lname"
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >GESTIÓN</label
+                      >
+                      <div class="col-sm-6">
+                        <input
+                          type="date"
+                          class="form-control"
+                          id="lname"
+                          placeholder="INGRESE GESTIÓN" name="txtgestion"
+                        />
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label
+                        for="lname"
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >CARPETAS EN EL TOMO</label
+                      >
+                      <div class="col-sm-6">
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="lname"
+                          placeholder="INGRESE CARPETAS EN EL TOMO" name="txtcarpetas"
+                        />
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label
+                        for="lname"
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >NRO. COMPROBANTES</label
+                      >
+                      <div class="col-sm-6">
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="lname"
+                          placeholder="N° DE COMPROBANTES" name="txtcomprobantes"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div class="form-group row">
+                      <label
+                        for="lname"
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >TRAMITE</label
+                      >
+                      <div class="col-sm-6">
+                        <select class="select2 form-select "
+                          style="height: 36px; width: 100%" name="cbxoficina">
+                          <option>SELECCIONE UNA OPCION</option>
+                         @foreach($qtramite as $tra)
+                         <option value="{{$tra->idtramite}}">{{$tra->nombre}}</option>
+                         @endforeach
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label
+                        for="lname"
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >ESTANTE</label
+                      >
+                      <div class="col-sm-6">
+                        <select class="select2 form-select "
+                          style="height: 36px; width: 100%" name="cbxoficina">
+                          <option>SELECCIONE UNA OPCION</option>
+                         @foreach($qestante as $est)
+                         <option value="{{$est->idestante}}">{{$est->nombre}}</option>
+                         @endforeach
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label
+                        for="lname"
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >PASILLO</label
+                      >
+                      <div class="col-sm-6">
+                        <select class="select2 form-select "
+                          style="height: 36px; width: 100%" name="cbxoficina">
+                          <option>SELECCIONE UNA OPCION</option>
+                         @foreach($qpasillo as $pas)
+                         <option value="{{$pas->idpasillo}}">{{$pas->pasillo}}</option>
+                         @endforeach
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="border-top">
+                    <div class="card-body text-center">
+                      <button type="submit" class="btn btn-primary">
+                        GUARDAR
+                      </button>
+                      <button type="button" class="btn btn-secondary">
+                        CANCELAR
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              
+           
+          </div>
+          <!-- ============================================================== -->
+          <!-- End PAge Content -->
+          <!-- ============================================================== -->
+          <!-- ============================================================== -->
+          <!-- Right sidebar -->
+          <!-- ============================================================== -->
+          <!-- .right-sidebar -->
+          <!-- ============================================================== -->
+          <!-- End Right sidebar -->
+          <!-- ============================================================== -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Container fluid  -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- footer -->
+        <!-- ============================================================== -->
+        <footer class="footer text-center">
+        Contacto: sistemas_gamcol@colcapirhua.gob.bo , gamc@colcapirhua.gob.bo Teléfono: (+591 4) 4269983, (+591 4) 4269985</a>..
+        </footer>
+        <!-- ============================================================== -->
+        <!-- End footer -->
+        <!-- ============================================================== -->
       </div>
-      
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CERRAR</button>
-        <button type="submit" class="btn btn-primary">GUARDAR</button>
-      </div>
-    </div>
-  
-   </form>
-  </div>
-</div>
 
-
-<script type="text/javascript">
-
-  var fecha = new Date();
-  document.getElementById("FechaActual").value = fecha.toJSON().slice(0,10);
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-
-
+      @endsection

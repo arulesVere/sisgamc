@@ -34,7 +34,7 @@ class CVehiculo extends Controller
             'grant_type' => 'refresh_token',
 
         ]);
-        //dd($response);
+        //dd($client_id);
         $access_token = json_decode((string) $response->getBody(), true)['access_token'];
         return $access_token;
     }
@@ -83,13 +83,15 @@ class CVehiculo extends Controller
 
     public function index()
     {
+        $sessionidusuario=session('sessionidusuario');
+
         $allvehiculo = DB::SELECT('SELECT e.idempastado,e.codigo,e.numero,e.fecha,e.condicion,t.nombre,est.nombre,p.pasillo,v.carpetas,
         v.total,v.certificaciones,v.placas,v.fechasingreso
         FROM colcapir_bddsisgamc.empastado e
         INNER JOIN colcapir_bddsisgamc.vehiculo v ON v.idempastado=e.idempastado
         INNER JOIN colcapir_bddsisgamc.tramite t ON e.idtramite=t.idtramite
         INNER JOIN colcapir_bddsisgamc.estante est ON e.idestante=est.idestante
-        INNER JOIN colcapir_bddsisgamc.pasillo p ON e.idpasillo=p.idpasillo WHERE e.estado=1');
+        INNER JOIN colcapir_bddsisgamc.pasillo p ON e.idpasillo=p.idpasillo WHERE e.estado=1 AND e.idpersona="'. $sessionidusuario.'"');
         return view('Vehiculo.index', ['allvehiculo' => $allvehiculo]);
     }
 
@@ -112,7 +114,8 @@ class CVehiculo extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {   $sessionidusuario=session('sessionidusuario');
+        
         $accessToken = $this->token();
         $client = new Client();
         $client->addScope(Drive::DRIVE);
@@ -120,6 +123,9 @@ class CVehiculo extends Controller
         $driveService = new Drive($client);
 
         $main_folder_id = \Config('services.google.folder_id');
+
+        //dd($main_folder_id);
+
         $oficina = session('sessionoficina');
         $oficina_folder_id = $this->getFolderId($oficina, $main_folder_id, $driveService);
 
@@ -130,18 +136,19 @@ class CVehiculo extends Controller
         $gestion_folder = date('Y', $time_input);
         $gestion_folder_id = $this->getFolderId($gestion_folder, $tipo_tramite_folder_id, $driveService);
 
+
         $mes_folder = date('m', $time_input);
         $mes_folder_id = $this->getFolderId($mes_folder, $gestion_folder_id, $driveService);
 
         $tomo_folder = $request->get('txtnumero');
         $tomo_folder_id = $this->getFolderId($tomo_folder, $mes_folder_id, $driveService);
 
-
+        
         $empastado = new Empastado();
         $empastado->codigo = Str::random(5);
         $empastado->numero = $request->get('txtnumero');
         $empastado->fecha = $request->get('txtgestion');
-        $empastado->idpersona = 100;
+        $empastado->idpersona = $sessionidusuario;
         $empastado->idtramite = $request->get('cbxtramite');
         $empastado->idestante = $request->get('cbxestante');
         $empastado->idpasillo = $request->get('cbxpasillo');
@@ -158,9 +165,8 @@ class CVehiculo extends Controller
         $vehiculo->placas = $request->get('txtplacas');
         $vehiculo->fechasingreso = $request->get('txtfechasingreso');
         $vehiculo->save();
+        return redirect('/Vehiculo');
         // crear carpetas y subcarpetas
-
-
     }
 
     /**
@@ -182,15 +188,18 @@ class CVehiculo extends Controller
      */
     public function edit($idempastado)
     {
-        $vehiculo = DB::SELECT('SELECT e.codigo,e.numero,e.fecha,t.nombre,est.nombre,p.pasillo,v.carpetas,
-        v.total,v.certificaciones,v.placas,v.fechasingreso
-        FROM colcapir_bddsisgamc.empastado e
-        INNER JOIN colcapir_bddsisgamc.vehiculo v ON v.idempastado=e.idempastado
-        INNER JOIN colcapir_bddsisgamc.tramite t ON e.idtramite=t.idtramite
-        INNER JOIN colcapir_bddsisgamc.estante est ON e.idestante=est.idestante
-        INNER JOIN colcapir_bddsisgamc.pasillo p ON e.idpasillo=p.idpasillo
-        WHERE e.estado=1 AND e.idempastado="' . $idempastado . '"');
-        return view('Vehiculo.edit', ['vehiculo' => $vehiculo]);
+        $queryempastado=Empastado::findOrFail($idempastado); 
+        $queryvehiculo=Vehiculo::findOrFail($idempastado);
+
+        $tramite=DB::SELECT('SELECT t.idtramite,t.nombre FROM colcapir_bddsisgamc.tramite t 
+        WHERE t.estado=1 ORDER BY t.nombre DESC');
+
+        $estante=DB::SELECT('SELECT e.idestante,CONCAT(e.nombre," BANDEJA: ",e.fila) AS estante,e.estado
+        FROM colcapir_bddsisgamc.estante e WHERE e.estado=1 ORDER BY e.nombre DESC');
+
+        $pasillo=DB::SELECT('SELECT p.idpasillo,p.pasillo,p.idoficina FROM colcapir_bddsisgamc.pasillo p
+        WHERE p.estado=1 ORDER BY p.pasillo DESC');
+        return view('Vehiculo.edit', ['allv' => $queryempastado,'qv' => $queryvehiculo,'tramite'=>$tramite,'estante'=>$estante,'pasillo'=>$pasillo]);
     }
 
     /**

@@ -4,13 +4,13 @@ $nombreoficina=session('sessionoficina');
 $sessionidusuario=session('sessionidusuario');
 ?>
 <!-- Modal -->
-<div class="modal fade" id="preescripcionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="finanzasModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog  modal-xl">
-   <form class="form-horizontal" action="/Preescripcion" method="Post" >
+   <form class="form-horizontal" action="/Finanzas" method="Post" >
     @csrf  
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">NUEVO REGISTRO / PREESCRIPCION</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">NUEVO REGISTRO / FINANZAS</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -28,6 +28,7 @@ $sessionidusuario=session('sessionidusuario');
                       class="form-control"
                       id="fname" name="txtnumero"
                       placeholder="INGRESE NUMERO CARPETA"
+                      required=""
                   />
                 </div>
                 <label
@@ -41,10 +42,11 @@ $sessionidusuario=session('sessionidusuario');
                     class="form-control"
                     id="fname" name="txthoja"
                     placeholder="INGRESE NUMERO DE HOJAS"
+                    required=""
                 />
                 </div>
             </div>
-
+            
             <div class="form-group row">
                 <label
                 for="fname"
@@ -59,6 +61,21 @@ $sessionidusuario=session('sessionidusuario');
                       placeholder="INGRESE FECHA INICIO"
                   />
                 </div>
+                 <label
+                for="fname"
+                class="col-sm-3 text-end control-label col-form-label"
+                >NRO. COMPROBANTES:</label
+                >
+                <div class="col-sm-3">
+                 <input
+                      type="text"
+                      class="form-control"
+                      id="fname" name="txtcomprobante"
+                      placeholder="INGRESE NRO. COMPROBANTES"
+                      required=""
+                  />
+                </div> 
+                <!--
                 <label
                 for="fname"
                 class="col-sm-3 text-end control-label col-form-label"
@@ -71,82 +88,40 @@ $sessionidusuario=session('sessionidusuario');
                       id="fname" name="txtfin"
                       placeholder="INGRESE FECHA FIN"
                   />
-                </div>
+                </div>-->
             </div>
             <div class="form-group row">
-                <label
+                 <label
                 for="fname"
                 class="col-sm-3 text-end control-label col-form-label"
-                >SOLICITANTE:</label
+                >UBICADO EN:</label
                 >
                 <div class="col-sm-3">
-                  <input
-                      type="text"
-                      class="form-control"
-                      id="fname" name="txtsolicitante"
-                      placeholder="INGRESE NOMBRE SOLICITANTE"
-                  />
-                </div>
-          
-                <label
-                for="fname"
-                class="col-sm-3 text-end control-label col-form-label"
-                >CARNET:</label
-                >
-                <div class="col-sm-3">
-                  <input
-                      type="text"
-                      class="form-control"
-                      id="fname" name="txtcarnet"
-                      placeholder="INGRESE CARNET"
-                  />
-                </div>
-            </div>
-            <div class="form-group row">
-                
-                <label
-                for="fname"
-                class="col-sm-3 text-end control-label col-form-label"
-                >NRO PLACA:</label
-                >
-                <div class="col-sm-3">
-                    <input
-                    type="text"
-                    class="form-control"
-                    id="fname" name="txtplacapreescripcion"
-                    placeholder="INGRESE NRO PLACA"
-                    />
-                </div>
-            </div>
-            <div class="form-group row">
-                <label
-                for="fname"
-                class="col-sm-3 text-end control-label col-form-label"
-                >NRO. TRAMITE:</label
-                >
-                <div class="col-sm-3">
-                    <input
-                    type="text"
-                    class="form-control"
-                    id="fname" name="txtnumtramite"
-                    placeholder="INGRESE NRO TRAMITE"
-                />
-                </div>
-                <label
-                for="fname"
-                class="col-sm-3 text-end control-label col-form-label"
-                >NRO. REGISTRO TECNICO:</label
-                >
-                <div class="col-sm-3">
-                    <input
-                    type="text"
-                    class="form-control"
-                    id="fname" name="txtnumtecnico"
-                    placeholder="INGRESE NUMERO DE REGISTRO"
-                />
+                  <select
+                        class="select2 form-select shadow-none"
+                        style="width: 100%; height: 36px" name="cbxestante" required="">
+                          <option selected="" disabled="" value="">SELECCIONE UNA OPCION</option>
+                          @foreach($querybyestante as $qe)
+                          <option value="{{$qe->idestante}}">{{$qe->estante}}</option>
+                          @endforeach
+                  </select>
                 </div> 
+                <label
+                for="fname"
+                class="col-sm-3 text-end control-label col-form-label"
+                >TIPO SOLICITUD:</label
+                >
+                <div class="col-sm-3">
+                  <select
+                          class="select2 form-select shadow-none"
+                          style="width: 100%; height: 36px" name="cbxtramite" required="">
+                            <option selected="" disabled="" value="">SELECCIONE UNA OPCION</option>
+                            @foreach($querytramite as $qt)
+                            <option value="{{$qt->idtramite}}">{{$qt->nombre}}</option>
+                            @endforeach
+                  </select>
+                </div>
             </div>
-          </div>
         </div>
       </div>
       

@@ -18,8 +18,7 @@
               <!-- div para evento crear -->
               <div class="border-top">
                 <div class="card-body">
-                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#finanzasModal">
-                    NUEVO FOLDER
+                  <button type="button" class="btn btn-primary"><a href="{{ route('Finanzas.create') }}" style="color:white;">NUEVO REGISTRO</a>
                   </button>
                 </div>
               </div>
@@ -73,15 +72,7 @@
                              <td>{{$qbf->codigo}}</td>
                             <td><i class="fas fa-folder"></a></i>&nbsp;{{$qbf->numero}}</td>
                             <td>{{$qbf->tramite}}</td>
-                            <td>{{date('m-Y',strtotime($qbf->fechainicio))}}</td>
-                            <!--
-                            <td>{{$qbf->fechainicio}}</td>
-                            @if($qbf->fechafin==null)
-                            <td><p class="text-warning">EN PROCESO</p></td>
-                            @else
-                            <td>{{$qbf->fechafin}}</td>
-                            @endif
-                            -->
+                            <td>{{date('m-Y',strtotime($qbf->fecha))}}</td>
                             <td>{{$qbf->nrohoja}}</td> 
                             <td>{{$qbf->nrocomprobante}}</td>
                             <td>{{$qbf->estante}}</td> 
@@ -94,7 +85,6 @@
                           @endforeach
                         </tbody>
                       </table>
-                      @include('Finanzas.create')
                 </div>
               </div>
             </div>

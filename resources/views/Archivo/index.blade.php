@@ -69,7 +69,7 @@ $sessionidfolder=session('sessionidfolder');
                       <td>{{$query->nombre}}</td>
                      
                       <td><a target="_blank" href="{{route('ver',$query->idarchivo)}}#toolbar=0"> VER </a><i class="fas fa-eye"></i></td>
-                      <td>{{$query->tipo}}</td><!-- Aqui metodo para descargar -->
+                      <td>{{$query->tipo}}</td>
                       <td><a href="{{route('download',$query->idarchivo)}}"> DESCARGAR </a><i class="fas fa-arrow-alt-circle-down"></i></td>
                       @if($query->estado==0)
                       <td>DE BAJA</td>

@@ -3,7 +3,7 @@
         <div class="page-breadcrumb">
           <div class="row">
             <div class="col-12 d-flex no-block align-items-center">
-              <h4 class="page-title">Tables</h4>
+              <h4 class="page-title">LISTA DE REGISTROS</h4>
               <div class="ms-auto text-end">
                 <nav aria-label="breadcrumb">
                   <ol class="breadcrumb">
@@ -40,7 +40,7 @@
             <div class="col-12">
               <div class="card">
                 <div class="card-body">
-                  <h5 class="card-title">Basic Datatable</h5>
+                  <h5 class="card-title">DETALLE</h5>
                   <div class="table-responsive">
                     <table
                       id="zero_config"
@@ -54,9 +54,9 @@
                           <th>GESTIÓN</th>
                           <th>CARPETAS</th>
                           <th>TOTAL</th>
-                          <th>N° DE CERTIFICACION DE PROPIEDAD</th>
+                          <th>N° DE CERTIFICACION </br> DE PROPIEDAD</th>
                           <th>N° DE PLACAS</th>
-                          <th>FECHAS DE INGRESO</th>
+                          <th>FECHAS </br> DE INGRESO</th>
                           <th>CONDICION</th>
                           <th>UBICACION</th>
                           <th>ACCIÓN</th>
@@ -67,7 +67,7 @@
                         <tr>
                           <td style="width:5%;">{{$loop->iteration}}</td>
                           <td>{{$allv->codigo}}</td>
-                          <td>1</td>
+                          <td>{{$allv->numero}}</td>
                           <td>{{$allv->fecha}}</td>
                           <td>1-6</td>
                           <td>6</td>

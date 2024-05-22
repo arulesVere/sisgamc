@@ -1,8 +1,5 @@
 @extends('Layout.layout')
 @section('content')
-        <!-- ============================================================== -->
-        <!-- Bread crumb and right sidebar toggle -->
-        <!-- ============================================================== -->
         <div class="page-breadcrumb">
           <div class="row">
             <div class="col-12 d-flex no-block align-items-center">
@@ -10,9 +7,9 @@
               <div class="ms-auto text-end">
                 <nav aria-label="breadcrumb">
                   <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Ingresos</a></li>
                     <li class="breadcrumb-item active" aria-current="page">
-                      Library
+                    Registrar
                     </li>
                   </ol>
                 </nav>
@@ -31,157 +28,175 @@
           <!-- Start Page Content -->
           <!-- ============================================================== -->
           <div class="row">
-            <div class="col-md-12 col-sm-12">
+            <div class="col-md-12">
               <div class="card">
-                <form class="form-horizontal" action="/Vehiculo" method="Post" enctype="multipart/form-data">
-                  @csrf
+              <form class="form-horizontal" action="/Vehiculo" method="Post" enctype="multipart/form-data">
+                  @csrf 
                   <div class="card-body">
                     <h4 class="card-title">INGRESE DATOS:</h4>
-
-                  <div class="form-group row">
+                    <div class="form-group row">
                       <label
                         for="fname"
-                        class="col-sm-2 text-end control-label col-form-label"
-                        >1. N° DE TOMO</label
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >NÚMERO DE TOMO:</label
                       >
-                      <div class="col-lg-3">
+                      <div class="col-sm-6">
                         <input
                           type="text"
                           class="form-control"
+                          id="fname"
                           placeholder="N° TOMO" name="txtnumero"
                         />
                       </div>
+                    </div>
+                    <div class="form-group row">
                       <label
-                        for="fname"
-                        class="col-sm-2 text-end control-label col-form-label"
-                        >2. GESTIÓN</label
+                        for="lname"
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >GESTIÓN</label
                       >
-                      <div class="col-lg-3">
+                      <div class="col-sm-6">
                         <input
                           type="date"
-                          class="form-control" name="txtgestion"
+                          class="form-control"
+                          id="lname"
+                          placeholder="INGRESE GESTIÓN" name="txtgestion"
                         />
                       </div>
-                  </div>
-
-                  <div class="form-group row">
+                    </div>
+                    <div class="form-group row">
                       <label
-                        for="fname"
-                        class="col-sm-2 text-end control-label col-form-label"
-                        >3. CARPETAS EN EL TOMO</label
+                        for="lname"
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >CARPETAS EN EL TOMO</label
                       >
-                      <div class="col-lg-3">
+                      <div class="col-sm-6">
                         <input
                           type="text"
                           class="form-control"
-                          placeholder="CARPETAS INCLUIDAS" name="txtcarpetas"
+                          id="lname"
+                          placeholder="INGRESE CARPETAS EN EL TOMO" name="txtcarpetas"
                         />
                       </div>
+                    </div>
+                    <div class="form-group row">
                       <label
-                        for="fname"
-                        class="col-sm-2 text-end control-label col-form-label"
-                        >4. TOTAL CARPETAS</label
+                        for="lname"
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >TOTAL CARPETAS</label
                       >
-                      <div class="col-lg-3">
+                      <div class="col-sm-6">
                         <input
                           type="text"
                           class="form-control"
+                          id="lname"
                           placeholder="TOTAL CARPETAS" name="txttotal"
                         />
                       </div>
-                  </div>
-
-                  <div class="form-group row">
+                    </div>
+                    <div class="form-group row">
                       <label
-                        for="fname"
-                        class="col-sm-2 text-end control-label col-form-label"
-                        >5. CERTIFICACIONES DE PROPIEDAD</label
+                        for="lname"
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >CERTIFICACIONES DE PROPIEDAD</label
                       >
-                      <div class="col-lg-3">
-                        <textarea class="form-control" rows="5" cols="40" name="txtcertificaciones"></textarea>
+                      <div class="col-sm-6">
+                        <textarea class="form-control" rows="3" cols="40" name="txtcertificaciones"></textarea>
                       </div>
+                    </div>
+                    <div class="form-group row">
                       <label
-                        for="fname"
-                        class="col-sm-2 text-end control-label col-form-label"
-                        >6. PLACAS</label
+                        for="lname"
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >PLACAS</label
                       >
-                      <div class="col-lg-3">
-                        <textarea class="form-control" rows="5" cols="40" name="txtplacas"></textarea>
+                      <div class="col-sm-6">
+                        <textarea class="form-control" rows="3" cols="40" name="txtplacas"></textarea>
                       </div>
-                  </div>
-
-                  <div class="form-group row">
+                    </div>
+                    <div class="form-group row">
                       <label
-                        for="fname"
-                        class="col-sm-2 text-end control-label col-form-label"
-                        >7. FECHAS DE INGRESO</label
+                        for="lname"
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >FECHAS DE INGRESO</label
                       >
-                      <div class="col-lg-3">
-                        <textarea class="form-control" rows="5" cols="40" name="txtfechasingreso"></textarea>
+                      <div class="col-sm-6">
+                        <textarea class="form-control" rows="3" cols="40" name="txtfechasingreso"></textarea>
                       </div>
+                    </div>
+                    <div class="form-group row">
                       <label
-                        for="fname"
-                        class="col-sm-2 text-end control-label col-form-label"
-                        >8. TRAMITE</label
+                        for="lname"
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >TRAMITE</label
                       >
-                      <div class="col-lg-3">
-                      <select
-                        class="select2 form-select "
-                        style="height: 36px; width: 100%" name="cbxtramite"
-                      >
+                      <div class="col-sm-6">
+                        <select class="select2 form-select "
+                          style="height: 36px; width: 100%" name="cbxtramite">
                           <option>SELECCIONE UNA OPCION</option>
-                          @foreach($qtramite as $qt)
-                          <option value="{{$qt->idtramite}}">{{$qt->nombre}}</option>
-                          @endforeach
-                      </select>
-                      </div>
-                  </div>
-                  <div class="form-group row">
-                      <label
-                        for="fname"
-                        class="col-sm-2 text-end control-label col-form-label"
-                        >9. ESTANTE</label
-                      >
-                      <div class="col-lg-3">
-                        <select
-                        class="select2 form-select "
-                        style="height: 36px; width: 100%" name="cbxestante"
-                      >
-                          <option>SELECCIONE UNA OPCION</option>
-                          @foreach($qestante as $qe)
-                          <option value="{{$qe->idestante}}">{{$qe->nombre}}</option>
-                          @endforeach
-                      
+                         @foreach($qtramite as $tra)
+                         <option value="{{$tra->idtramite}}">{{$tra->nombre}}</option>
+                         @endforeach
                         </select>
                       </div>
+                    </div>
+                    <div class="form-group row">
                       <label
-                        for="fname"
-                        class="col-sm-2 text-end control-label col-form-label"
-                        >10. PASILLO</label
+                        for="lname"
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >ESTANTE</label
                       >
-                      <div class="col-lg-3">
-                      <select
-                        class="select2 form-select "
-                        style="height: 36px; width: 100%" name="cbxpasillo"
-                      >
+                      <div class="col-sm-6">
+                        <select class="select2 form-select "
+                          style="height: 36px; width: 100%" name="cbxestante">
                           <option>SELECCIONE UNA OPCION</option>
-                          @foreach($qpasillo as $qp)
-                          <option value="{{$qp->idpasillo}}">{{$qp->pasillo}}</option>
-                          @endforeach
-                      </select>
+                         @foreach($qestante as $est)
+                         <option value="{{$est->idestante}}">{{$est->nombre}}</option>
+                         @endforeach
+                        </select>
                       </div>
+                    </div>
+                    <div class="form-group row">
+                      <label
+                        for="lname"
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >PASILLO</label
+                      >
+                      <div class="col-sm-6">
+                        <select class="select2 form-select "
+                          style="height: 36px; width: 100%" name="cbxpasillo">
+                          <option>SELECCIONE UNA OPCION</option>
+                         @foreach($qpasillo as $pas)
+                         <option value="{{$pas->idpasillo}}">{{$pas->pasillo}}</option>
+                         @endforeach
+                        </select>
+                      </div>
+                    </div>
                   </div>
-
                   <div class="border-top">
-                    <div class="card-body d-flex justify-content-center">
-                        <button type='submit' class="btn btn-primary">GUARDAR</button> &nbsp;
-                        <button type='reset' class="btn btn-success">RESETEAR</button>
+                    <div class="card-body text-center">
+                      <button type="submit" class="btn btn-primary">
+                        GUARDAR
+                      </button>
+                      <button type="button" class="btn btn-secondary">
+                        CANCELAR
+                      </button>
                     </div>
                   </div>
                 </form>
               </div>
-            </div>
+              
           </div>
+          <!-- ============================================================== -->
+          <!-- End PAge Content -->
+          <!-- ============================================================== -->
+          <!-- ============================================================== -->
+          <!-- Right sidebar -->
+          <!-- ============================================================== -->
+          <!-- .right-sidebar -->
+          <!-- ============================================================== -->
+          <!-- End Right sidebar -->
+          <!-- ============================================================== -->
         </div>
         <!-- ============================================================== -->
         <!-- End Container fluid  -->
@@ -190,15 +205,10 @@
         <!-- footer -->
         <!-- ============================================================== -->
         <footer class="footer text-center">
-        Contacto: sistemas_gamcol@colcapirhua.gob.bo , gamc@colcapirhua.gob.bo Teléfono: (+591 4) 4269983, (+591 4) 4269985</a>.
+        Contacto: sistemas_gamcol@colcapirhua.gob.bo , gamc@colcapirhua.gob.bo Teléfono: (+591 4) 4269983, (+591 4) 4269985</a>..
         </footer>
         <!-- ============================================================== -->
         <!-- End footer -->
         <!-- ============================================================== -->
       </div>
-      <!-- ============================================================== -->
-      <!-- End Page wrapper  -->
-      <!-- ============================================================== -->
-    
       @endsection
-      

@@ -25,30 +25,16 @@ class CFinanzas extends Controller
         $sessionidusuario=session('sessionidusuario');
         $nombreoficina=session('sessionoficina');
 
-        $allconfig="SELECT ruta FROM colcapir_bddsisgamc.config";
-        $queryconfig=DB::select($allconfig);
-
-        $alltramite='SELECT t.idtramite,t.nombre FROM colcapir_bddsisgamc.tramite t 
-        INNER JOIN colcapir_bddsisgamc.oficina o ON t.idoficina=o.idoficina
-        WHERE t.estado=1 AND o.nombre="'.$nombreoficina.'" ORDER BY t.nombre DESC';
-        $querytramite=DB::select($alltramite);
-
-        $allestante=DB::select('SELECT e.idestante,CONCAT(e.nombre," - ",e.fila," - PASILLO ",e.pasillo," DE ",o.nombre) AS estante,e.estado
-        FROM colcapir_bddsisgamc.estante e
-        INNER JOIN colcapir_bddsisgamc.oficina o ON e.idoficina=o.idoficina
-        WHERE o.estado=1 AND o.nombre="'.$nombreoficina.'" AND e.estado=1 ORDER BY o.nombre DESC');
-
-        $allfolderbyfinanzas=DB::select('SELECT f.idfolder,f.codigo,f.numero,f.idpersona,t.nombre AS tramite,f.estado,f.fechainicio,f.fechafin,f.nrohoja,fi.nrocomprobante,
-        CONCAT(est.nombre," - ",est.fila," - PASILLO ",est.pasillo) AS estante
-        FROM colcapir_bddsisgamc.folder f 
-        INNER JOIN colcapir_bddsisgamc.tramite t ON t.idtramite=f.idtramite
-        INNER JOIN colcapir_bddsisgamc.finanzas fi ON fi.idfolder=f.idfolder
-        INNER JOIN colcapir_bddsisgamc.estante est ON f.idestante=est.idestante
-        WHERE f.estado=1 AND f.idpersona="'. $sessionidusuario.'" ORDER BY numero ASC');
-
-        return view('Finanzas.index', ['con'=>$queryconfig,'querytramite'=>$querytramite,'querybyfinanzas'=>$allfolderbyfinanzas,'querybyestante'=> $allestante]);
+        $allfolderbyfinanzas=DB::select('SELECT e.idempastado,e.codigo,e.numero,e.idpersona,t.nombre AS tramite,e.estado,e.fecha,fi.nrocomprobante,
+        CONCAT(est.nombre," - ",est.fila) AS estante
+        FROM colcapir_bddsisgamc.empastado e 
+        INNER JOIN colcapir_bddsisgamc.tramite t ON t.idtramite=e.idtramite
+        INNER JOIN colcapir_bddsisgamc.finanzas fi ON fi.idempastado=e.idempastado
+        INNER JOIN colcapir_bddsisgamc.estante est ON est.idestante=e.idestante
+        INNER JOIN colcapir_bddsisgamc.pasillo p ON p.idpasillo=e.idpasillo
+        WHERE e.estado=1  AND e.idpersona="'. $sessionidusuario.'" ORDER BY numero ASC');
+        return view('Finanzas.index', ['querybyfinanzas'=>$allfolderbyfinanzas]);
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -56,9 +42,15 @@ class CFinanzas extends Controller
      */
     public function create()
     {
-        //
+        $nombreoficina=session('sessionoficina');
+        $alltramite = DB::SELECT('SELECT t.idtramite,t.nombre AS nombre FROM colcapir_bddsisgamc.tramite t INNER JOIN colcapir_bddsisgamc.oficina o 
+        ON t.idoficina=o.idoficina WHERE t.estado=1 AND o.nombre="'.$nombreoficina.'"');
+        $allpasillo = DB::SELECT('SELECT p.idpasillo,p.pasillo AS pasillo FROM colcapir_bddsisgamc.pasillo p INNER JOIN colcapir_bddsisgamc.oficina o 
+        ON p.idoficina=o.idoficina WHERE p.estado=1 AND o.nombre="'.$nombreoficina.'"');
+        $allestante = DB::SELECT('SELECT e.idestante,e.nombre FROM colcapir_bddsisgamc.estante e INNER JOIN colcapir_bddsisgamc.oficina o 
+        ON e.idoficina=o.idoficina WHERE e.estado=1 AND o.nombre="'.$nombreoficina.'"');
+        return view('Finanzas.create', ['qtramite' => $alltramite, 'qpasillo' => $allpasillo, 'qestante' => $allestante]);
     }
-
     /**
      * Store a newly created resource in storage.
      *

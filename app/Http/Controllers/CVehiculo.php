@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Estante;
+use App\Models\Pasillo;
+use App\Models\Tramite;
 use App\Models\Vehiculo;
 use App\Models\Empastado;
 use Illuminate\Http\Request;
@@ -180,17 +183,10 @@ class CVehiculo extends Controller
      * @param  \App\Models\Vehiculo  $vehiculo
      * @return \Illuminate\Http\Response
      */
-    public function edit($idempastado)
+    public function edit($id)
     {
-        $vehiculo = DB::SELECT('SELECT e.codigo,e.numero,e.fecha,t.nombre,est.nombre,p.pasillo,v.carpetas,
-        v.total,v.certificaciones,v.placas,v.fechasingreso
-        FROM colcapir_bddsisgamc.empastado e
-        INNER JOIN colcapir_bddsisgamc.vehiculo v ON v.idempastado=e.idempastado
-        INNER JOIN colcapir_bddsisgamc.tramite t ON e.idtramite=t.idtramite
-        INNER JOIN colcapir_bddsisgamc.estante est ON e.idestante=est.idestante
-        INNER JOIN colcapir_bddsisgamc.pasillo p ON e.idpasillo=p.idpasillo
-        WHERE e.estado=1 AND e.idempastado="' . $idempastado . '"');
-        return view('Vehiculo.edit', ['vehiculo' => $vehiculo]);
+        $empastado = Empastado::find($id);
+        return view('Vehiculo.edit', ['empastado' => $empastado]);
     }
 
     /**
@@ -200,9 +196,14 @@ class CVehiculo extends Controller
      * @param  \App\Models\Vehiculo  $vehiculo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Vehiculo $vehiculo)
+    public function update(Request $request, $idempastado)
     {
-        //
+
+        $empastado = Empastado::find($idempastado);
+        $empastado->numero = $request->get('txtnumero');
+        $empastado->fecha = $request->get('txtgestion');
+        $empastado->update();
+        return redirect('/Vehiculo');
     }
 
     /**
@@ -211,9 +212,12 @@ class CVehiculo extends Controller
      * @param  \App\Models\Vehiculo  $vehiculo
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Vehiculo $vehiculo)
+    public function destroy($vehiculoId)
     {
-        //
+
+        $vehiculo = Vehiculo::find($vehiculoId);
+        $vehiculo->delete();
+        return redirect('/Vehiculo');
     }
 
 }

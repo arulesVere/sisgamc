@@ -10,7 +10,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        ESTA SEGURO DE ELIMINAR EL ARCHIVO: 
+        ESTA SEGURO DE ELIMINAR EL ARCHIVO:
         </br></br>
         <div  class="text-center">
             <strong>{{$query->nombre}}</strong>

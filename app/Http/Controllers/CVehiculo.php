@@ -83,14 +83,12 @@ class CVehiculo extends Controller
 
     public function index(Request $request)
     {
+        $allvehiculo = DB::table('empastado')
+            ->join('vehiculo', 'empastado.idempastado', '=', 'vehiculo.idempastado')
+            ->where('estado', '=', 1)
+            ->get()
+            ->all();
 
-        $allvehiculo = DB::SELECT('SELECT e.idempastado,e.codigo,e.numero,e.fecha,e.condicion,t.nombre,est.nombre,p.pasillo,v.carpetas,
-        v.total,v.certificaciones,v.placas,v.fechasingreso
-        FROM colcapir_bddsisgamc.empastado e
-        INNER JOIN colcapir_bddsisgamc.vehiculo v ON v.idempastado=e.idempastado
-        INNER JOIN colcapir_bddsisgamc.tramite t ON e.idtramite=t.idtramite
-        INNER JOIN colcapir_bddsisgamc.estante est ON e.idestante=est.idestante
-        INNER JOIN colcapir_bddsisgamc.pasillo p ON e.idpasillo=p.idpasillo WHERE e.estado=1');
         return view('Vehiculo.index', ['allvehiculo' => $allvehiculo]);
     }
 
@@ -146,6 +144,7 @@ class CVehiculo extends Controller
         $empastado->idtramite = $request->get('cbxtramite');
         $empastado->idestante = $request->get('cbxestante');
         $empastado->idpasillo = $request->get('cbxpasillo');
+        $empastado->google_folder_id = $tomo_folder_id;
         $empastado->save();
 
         $maxidfolder = DB::select('SELECT MAX(e.idempastado) AS idempastado FROM colcapir_bddsisgamc.empastado e WHERE e.estado=1');

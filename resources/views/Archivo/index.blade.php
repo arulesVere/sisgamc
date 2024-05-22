@@ -27,7 +27,7 @@ $sessionidfolder=session('sessionidfolder');
                 </div>
               </div>
               <!-- fin evento crear -->
-            
+
             </div>
           </div>
         </div>
@@ -47,7 +47,7 @@ $sessionidfolder=session('sessionidfolder');
                 <div class="card-body">
                   <h5 class="card-title mb-0">LISTA ARCHIVOS</h5>
                 </div>
-          
+
                 <table class="table">
                   <thead>
                     <tr>
@@ -63,14 +63,14 @@ $sessionidfolder=session('sessionidfolder');
                   </thead>
                   <tbody>
                     @foreach($queryarchivo as $query)
-                  
+
                     <tr>
                       <td>{{$loop->iteration}}</td>
                       <td>{{$query->nombre}}</td>
-                     
-                      <td><a target="_blank" href="{{route('ver',$query->idarchivo)}}#toolbar=0"> VER </a><i class="fas fa-eye"></i></td>
+
+                      <td><a target="_blank" href="https://drive.google.com/file/d/{{$query->google_file_id}}"> VER </a><i class="fas fa-eye"></i></td>
                       <td>{{$query->tipo}}</td><!-- Aqui metodo para descargar -->
-                      <td><a href="{{route('download',$query->idarchivo)}}"> DESCARGAR </a><i class="fas fa-arrow-alt-circle-down"></i></td>
+                      <td><a target="_blank" href="https://drive.usercontent.google.com/u/0/uc?id={{$query->google_file_id}}&export=download"> DESCARGAR </a><i class="fas fa-arrow-alt-circle-down"></i></td>
                       @if($query->estado==0)
                       <td>DE BAJA</td>
                       @else
@@ -78,7 +78,7 @@ $sessionidfolder=session('sessionidfolder');
                       @endif
                       <td>{{$query->fecharegistro}}</td>
                       <td>
-           
+
                         <a href="/Archivo/{{$query->idarchivo}}/delete" data-bs-toggle="modal" data-bs-target="#deletearchivoModal{{$query->idarchivo}}" class="btn btn-danger btn-sm"><i class="mdi mdi-delete"></i></a>
                       </td>
                     </tr>
@@ -92,12 +92,12 @@ $sessionidfolder=session('sessionidfolder');
               </div>
             </div>
           </div>
-       
+
           <!-- ============================================================== -->
           <!-- Sales Cards  -->
           <!-- ============================================================== -->
-          
-      
+
+
         <footer class="footer text-center">
         Contacto: sistemas_gamcol@colcapirhua.gob.bo , gamc@colcapirhua.gob.bo Teléfono: (+591 4) 4269983, (+591 4) 4269985</a>.
         </footer>

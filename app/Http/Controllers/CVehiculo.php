@@ -19,30 +19,6 @@ use Carbon\Carbon;
 
 class CVehiculo extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    private function token()
-    {
-        $client_id = \Config('services.google.client_id');
-        $client_secret = \Config('services.google.client_secret');
-        $refresh_token = \Config('services.google.refresh_token');
-        $folder_id = \Config('services.google.folder_id');
-        $response = Http::post('https://oauth2.googleapis.com/token', [
-
-            'client_id' => $client_id,
-            'client_secret' => $client_secret,
-            'refresh_token' => $refresh_token,
-            'grant_type' => 'refresh_token',
-
-        ]);
-        //dd($response);
-        $access_token = json_decode((string) $response->getBody(), true)['access_token'];
-        return $access_token;
-    }
-
     public function getFolderId($folderName, $folderId, $driveService)
     {
         try {
@@ -85,6 +61,41 @@ class CVehiculo extends Controller
         }
     }
 
+    private function getTomoFolderId(Request $request)
+    {
+
+        $accessToken = session('googletoken');
+
+        $client = new Client();
+        $client->addScope(Drive::DRIVE);
+        $client->setAccessToken($accessToken);
+        $driveService = new Drive($client);
+
+        $main_folder_id = \Config('services.google.folder_id');
+        $oficina = session('sessionoficina');
+        $oficina_folder_id = $this->getFolderId($oficina, $main_folder_id, $driveService);
+
+        $tipo_tramite_folder = $request->get('cbxtramite');
+        $nombret = DB::table('tramite')
+            ->select('tramite.nombre as nombre')
+            ->where('tramite.idtramite', '=', [$request->get('cbxtramite')])
+            ->where('tramite.estado', '=', 1)
+            ->get();
+        $nombre = $nombret[0]->nombre;
+
+        $tipo_tramite_folder_id = $this->getFolderId($nombre, $oficina_folder_id, $driveService);
+
+        $time_input = strtotime($request->get('txtgestion'));
+        $gestion_folder = date('Y', $time_input);
+        $gestion_folder_id = $this->getFolderId($gestion_folder, $tipo_tramite_folder_id, $driveService);
+
+        $mes_folder = date('m', $time_input);
+        $mes_folder_id = $this->getFolderId($mes_folder, $gestion_folder_id, $driveService);
+
+        $tomo_folder = $request->get('txtnumero');
+        return $this->getFolderId($tomo_folder, $mes_folder_id, $driveService);
+    }
+
     public function index(Request $request)
     {
         $allvehiculo = DB::table('empastado')
@@ -116,46 +127,13 @@ class CVehiculo extends Controller
      */
     public function store(Request $request)
     {
-        $accessToken = $this->token();
-        $nombreoficina=session('sessionoficina');
+        $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
 
-        $nombret=DB::table('tramite')
-        ->select('tramite.nombre as nombre')
-        ->where('tramite.idtramite', '=', [$request->get('cbxtramite')])
-        ->where('tramite.estado', '=', 1 )
-        ->get();
-        $nombre=$nombret[0]->nombre;
-        
-        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
-        
         $fecha = Carbon::parse($request->get('txtgestion'));
         $mes = $meses[($fecha->format('n')) - 1];
         //dd($mes);
-        
 
-        $client = new Client();
-        $client->addScope(Drive::DRIVE);
-        $client->setAccessToken($accessToken);
-        $driveService = new Drive($client);
-
-        $main_folder_id = \Config('services.google.folder_id');
-        $oficina = session('sessionoficina');
-        $oficina_folder_id = $this->getFolderId($oficina, $main_folder_id, $driveService);
-
-        $tipo_tramite_folder = $request->get('cbxtramite');
-        //$tipo_tramite_folder_id = $this->getFolderId($tipo_tramite_folder, $oficina_folder_id, $driveService);
-        $tipo_tramite_folder_id = $this->getFolderId($nombre, $oficina_folder_id, $driveService);
-
-        $time_input = strtotime($request->get('txtgestion'));
-        $gestion_folder = date('Y', $time_input);
-        $gestion_folder_id = $this->getFolderId($gestion_folder, $tipo_tramite_folder_id, $driveService);
-
-        $mes_folder = date('m', $time_input);
-        $mes_folder_id = $this->getFolderId($mes_folder, $gestion_folder_id, $driveService);
-
-        $tomo_folder = $request->get('txtnumero');
-        $tomo_folder_id = $this->getFolderId($tomo_folder, $mes_folder_id, $driveService);
-
+        $tomo_folder_id = $this->getTomoFolderId($request);
 
         $empastado = new Empastado();
         $empastado->codigo = Str::random(5);
@@ -205,16 +183,16 @@ class CVehiculo extends Controller
     {
         $empastado = Empastado::find($id);
         $vehiculo = Vehiculo::find($id);
-        $tramite=DB::table('tramite')
-        ->where('tramite.estado', '=', 1 )
-        ->get();
-        $estante=DB::table('estante')
-        ->where('estante.estado', '=', 1 )
-        ->get();
-        $pasillo=DB::table('pasillo')
-        ->where('pasillo.estado', '=', 1 )
-        ->get();
-        return view('Vehiculo.edit', ['empastado' => $empastado,'vehiculo' => $vehiculo,'tramite' => $tramite,'estante' => $estante,'pasillo' => $pasillo]);
+        $tramite = DB::table('tramite')
+            ->where('tramite.estado', '=', 1)
+            ->get();
+        $estante = DB::table('estante')
+            ->where('estante.estado', '=', 1)
+            ->get();
+        $pasillo = DB::table('pasillo')
+            ->where('pasillo.estado', '=', 1)
+            ->get();
+        return view('Vehiculo.edit', ['empastado' => $empastado, 'vehiculo' => $vehiculo, 'tramite' => $tramite, 'estante' => $estante, 'pasillo' => $pasillo]);
     }
 
     /**
@@ -226,11 +204,26 @@ class CVehiculo extends Controller
      */
     public function update(Request $request, $idempastado)
     {
-
+        $tomo_folder_id = $this->getTomoFolderId($request);
         $empastado = Empastado::find($idempastado);
         $empastado->numero = $request->get('txtnumero');
         $empastado->fecha = $request->get('txtgestion');
+        $empastado->idtramite = $request->get('cbxtramite');
+        $empastado->idestante = $request->get('cbxestante');
+        $empastado->idpasillo = $request->get('cbxpasillo');
+        $empastado->google_folder_id = $tomo_folder_id;
         $empastado->update();
+
+
+        $vehiculo = Vehiculo::where('idempastado', '=', $idempastado)->first();
+        $vehiculo->carpetas = $request->get('txtcarpetas');
+        $vehiculo->total = $request->get('txttotal');
+        $vehiculo->certificaciones = $request->get('txtcertificaciones');
+        $vehiculo->placas = $request->get('txtplacas');
+        $vehiculo->fechasingreso = $request->get('txtfechasingreso');
+        $vehiculo->update();
+
+
         return redirect('/Vehiculo');
     }
 

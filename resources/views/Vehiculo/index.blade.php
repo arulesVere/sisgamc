@@ -69,11 +69,11 @@
                           <td>{{$allv->codigo}}</td>
                           <td>{{$allv->numero}}</td>
                           <td>{{$allv->fecha}}</td>
-                          <td>1-6</td>
-                          <td>6</td>
-                          <td>ABC</td>
-                          <td>ABC</td>
-                          <td>1/05/2024</td>
+                          <td>{{$allv->carpetas}}</td>
+                          <td>{{$allv->total}}</td>
+                          <td>{{$allv->certificaciones}}</td>
+                          <td>{{$allv->placas}}</td>
+                          <td>{{$allv->fechasingreso}}</td>
                           <td>{{$allv->condicion}}</td>
                           <td>ESTANTE 1 PASILLO 3</td>
                           <td>

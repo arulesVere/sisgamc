@@ -32,7 +32,7 @@
               <div class="card">
               <form class="form-horizontal" action="/Vehiculo/{{$empastado->idempastado}}" method="Post"  enctype="multipart/form-data">
                   @csrf
-                  @method('PUT') 
+                  @method('PUT')
                   <div class="card-body">
                     <h4 class="card-title">INGRESE DATOS:</h4>
                     <div class="form-group row">
@@ -136,7 +136,7 @@
                           style="height: 36px; width: 100%" name="cbxtramite">
                           <option>SELECCIONE UNA OPCION</option>
                          @foreach($tramite as $tra)
-                         <option value="{{$tra->idtramite}}"  
+                         <option value="{{$tra->idtramite}}"
                           @if($tra->idtramite == $empastado->idtramite) selected=true @endif
                           > {{$tra->nombre}} </option>
                          @endforeach
@@ -154,7 +154,7 @@
                           style="height: 36px; width: 100%" name="cbxestante">
                           <option>SELECCIONE UNA OPCION</option>
                          @foreach($estante as $est)
-                         <option value="{{$est->idestante}}"  
+                         <option value="{{$est->idestante}}"
                           @if($est->idestante == $empastado->idestante) selected=true @endif
                           > {{$est->nombre}} </option>
                          @endforeach
@@ -172,7 +172,7 @@
                           style="height: 36px; width: 100%" name="cbxpasillo">
                           <option>SELECCIONE UNA OPCION</option>
                          @foreach($pasillo as $pas)
-                         <option value="{{$pas->idpasillo}}"  
+                         <option value="{{$pas->idpasillo}}"
                           @if($pas->idpasillo == $empastado->idpasillo) selected=true @endif
                           > {{$pas->pasillo}} </option>
                          @endforeach
@@ -185,14 +185,14 @@
                       <button type="submit" class="btn btn-primary">
                         GUARDAR
                       </button>
-                      <button type="button" class="btn btn-secondary">
+                      <a href="/Vehiculo" class="btn btn-secondary">
                         CANCELAR
-                      </button>
+                      </a>
                     </div>
                   </div>
                 </form>
               </div>
-              
+
           </div>
           <!-- ============================================================== -->
           <!-- End PAge Content -->

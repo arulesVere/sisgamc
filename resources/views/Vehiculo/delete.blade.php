@@ -1,7 +1,7 @@
 <!-- Modal -->
 <div class="modal fade" id="deleteModal{{$allv->idempastado}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-  <form id="demo-form2" action="/Empastado/{{$allv->idempastado}}" method="Post" data-parsley-validate class="form-horizontal form-label-left">
+  <form id="demo-form2" action="/Vehiculo/{{$allv->idempastado}}" method="Post" data-parsley-validate class="form-horizontal form-label-left">
   @csrf
   @method('DELETE')
     <div class="modal-content">

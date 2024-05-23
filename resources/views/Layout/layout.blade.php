@@ -462,6 +462,12 @@ $sessionoficina=session('sessionoficina');
                     >
                   </li>
                   <li class="sidebar-item">
+                    <a href="/Pasillo" class="sidebar-link"
+                      ><i class="mdi mdi-adjust"></i
+                      ><span class="hide-menu"> PASILLO </span></a
+                    >
+                  </li>
+                  <li class="sidebar-item">
                     <a href="/Rol" class="sidebar-link"
                       ><i class="mdi mdi-adjust"></i
                       ><span class="hide-menu"> ROLES </span></a

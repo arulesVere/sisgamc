@@ -9,8 +9,8 @@ class Empastado extends Model
 {
     use HasFactory;
     public $timestamps = false;
-    protected $table="empastado";
-    protected $primaryKey="idempastado";
+    protected $table = "empastado";
+    protected $primaryKey = "idempastado";
     protected $fillable = [
         'codigo',
         'numero',
@@ -20,5 +20,6 @@ class Empastado extends Model
         'idtramite',
         'idestante',
         'idpasillo',
+        'google_folder_id',
     ];
 }

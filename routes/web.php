@@ -25,6 +25,7 @@ use App\Http\Controllers\CRuat;
 use App\Http\Controllers\CFinanzas;
 use App\Http\Controllers\CUrbanismo;
 use App\Http\Controllers\CVehiculo;
+use App\Http\Controllers\CPasillo;
 use App\Http\Controllers\CGoogleDrive;
 /*
 |--------------------------------------------------------------------------
@@ -97,6 +98,8 @@ Route::resource('/Saneamiento',CSaneamiento::class);
 Route::resource('/Prestamo',CPrestamo::class);
 
 Route::resource('/Estante',CEstante::class);
+
+Route::resource('/Pasillo',CPasillo::class);
 
 Route::resource('/Ruat',CRuat::class);
 

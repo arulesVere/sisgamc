@@ -61,35 +61,7 @@ class CFinanzas extends Controller
     {
         $sessionidusuario=session('sessionidusuario');
     
-        $queryoficial=DB::select('SELECT p.idpersona,CONCAT(p.papellido," ",IFNULL(p.sapellido," ")," ",p.nombre) AS nombrecompleto,o.idoficina,o.nombre AS oficina
-        FROM colcapir_bddsisgamc.persona p INNER JOIN colcapir_bddsisgamc.oficina o ON p.idoficina=o.idoficina WHERE p.estado=1 AND p.idpersona="'.$sessionidusuario.'"');
-    
-        $nombrecompleto=$queryoficial[0]->nombrecompleto;
-        $nombreoficina=$queryoficial[0]->oficina;
-
-        $ruta="SELECT ruta FROM colcapir_bddsisgamc.config";
-    
-        $queryruta=DB::select($ruta);
-        $directorio=$queryruta[0]->ruta.$nombreoficina;
-        
-        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
        
-        if(File::isDirectory($directorio))
-        {
-            $folder=new Folder();
-            $folder->idpersona=$sessionidusuario;
-            $numero=$request->get('txtnumero');
-            $folder->codigo=Str::random(5);
-            $folder->numero=$numero;
-            $folder->nrohoja=$request->get('txthoja');
-            $folder->fechainicio=$request->get('txtinicio');
-            $folder->fechafin='1000-01-01';
-            
-            $fecha = Carbon::parse($request->get('txtinicio'));
-            $mes = $meses[($fecha->format('n')) - 1];
-            //$dato= $fecha->format('d') . ' de ' . $mes . ' de ' . $fecha->format('Y');
-            $mesliteral= $mes;
-            $a単o=$fecha->format('Y');
             
             $folder->solicitante="SIN SOLICITANTE";
             $folder->carnet="SIN C.I.";
@@ -99,8 +71,8 @@ class CFinanzas extends Controller
             $nombret=DB::select('SELECT nombre AS nombretramite FROM colcapir_bddsisgamc.tramite WHERE idtramite=?',[$request->get('cbxtramite')]);
             $nombre=$nombret[0]->nombretramite;
             $path=($directorio.'/'.$nombrecompleto.'/'.$nombre.'/'.$a単o.'/'.$mes.'/'.$numero);
-            if(!File::isDirectory($path))
-                {
+            
+                
                     File::makeDirectory($path, 0777, true, true);
                             $folder->save();
                             $maxidfolder=DB::select('SELECT MAX(f.idfolder) AS idfolder FROM colcapir_bddsisgamc.folder f WHERE f.estado=1');
@@ -111,18 +83,9 @@ class CFinanzas extends Controller
                             Alert::success('EXITO', 'REGISTRO EXITOSO');
                             return redirect('/Finanzas');  
                         
-                }
-                else
-                {
-                    Alert::info('DUPLICADO', 'EL VALOR REGISTRADO YA EXISTE');
-                    return redirect('/Finanzas');  
-                }
-        }
-        else
-        {
-            Alert::error('NO EXISTE');
-            return redirect('/Finanzas'); 
-        }
+                
+               
+       
     }
 
     /**

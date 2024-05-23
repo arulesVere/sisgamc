@@ -17,5 +17,7 @@ class Archivo extends Model
         'tipo',
         'estado',
         'fecharegistro',
+        'google_folder_id',
+        'google_file_id',
     ];
 }

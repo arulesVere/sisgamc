@@ -17,7 +17,7 @@
                 <!-- div para evento crear -->
             <div class="border-top">
                 <div class="card-body">
-                  <button type="button" class="btn btn-primary"><a href="{{ route('Pasillo.create') }}">NUEVO REGISTRO</a>
+                  <button type="button" class="btn btn-primary"><a href="{{ route('Pasillo.create') }}" style="color:white;">NUEVO REGISTRO</a>
                   </button>
                 </div>
             </div>

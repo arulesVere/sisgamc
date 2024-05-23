@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Estante;
+use App\Models\Pasillo;
+use App\Models\Tramite;
 use App\Models\Vehiculo;
 use App\Models\Empastado;
 use Illuminate\Http\Request;
@@ -12,6 +15,7 @@ use File;
 use Session;
 use Google\Client;
 use Google\Service\Drive;
+use Carbon\Carbon;
 
 class CVehiculo extends Controller
 {
@@ -34,7 +38,7 @@ class CVehiculo extends Controller
             'grant_type' => 'refresh_token',
 
         ]);
-        //dd($client_id);
+        //dd($response);
         $access_token = json_decode((string) $response->getBody(), true)['access_token'];
         return $access_token;
     }
@@ -81,17 +85,14 @@ class CVehiculo extends Controller
         }
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $sessionidusuario=session('sessionidusuario');
+        $allvehiculo = DB::table('empastado')
+            ->join('vehiculo', 'empastado.idempastado', '=', 'vehiculo.idempastado')
+            ->where('estado', '=', 1)
+            ->get()
+            ->all();
 
-        $allvehiculo = DB::SELECT('SELECT e.idempastado,e.codigo,e.numero,e.fecha,e.condicion,t.nombre,est.nombre,p.pasillo,v.carpetas,
-        v.total,v.certificaciones,v.placas,v.fechasingreso
-        FROM colcapir_bddsisgamc.empastado e
-        INNER JOIN colcapir_bddsisgamc.vehiculo v ON v.idempastado=e.idempastado
-        INNER JOIN colcapir_bddsisgamc.tramite t ON e.idtramite=t.idtramite
-        INNER JOIN colcapir_bddsisgamc.estante est ON e.idestante=est.idestante
-        INNER JOIN colcapir_bddsisgamc.pasillo p ON e.idpasillo=p.idpasillo WHERE e.estado=1 AND e.idpersona="'. $sessionidusuario.'"');
         return view('Vehiculo.index', ['allvehiculo' => $allvehiculo]);
     }
 
@@ -114,28 +115,40 @@ class CVehiculo extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   $sessionidusuario=session('sessionidusuario');
-        
+    {
         $accessToken = $this->token();
+        $nombreoficina=session('sessionoficina');
+
+        $nombret=DB::table('tramite')
+        ->select('tramite.nombre as nombre')
+        ->where('tramite.idtramite', '=', [$request->get('cbxtramite')])
+        ->where('tramite.estado', '=', 1 )
+        ->get();
+        $nombre=$nombret[0]->nombre;
+        
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        
+        $fecha = Carbon::parse($request->get('txtgestion'));
+        $mes = $meses[($fecha->format('n')) - 1];
+        dd($fecha);
+        //dd($nombret);
+
         $client = new Client();
         $client->addScope(Drive::DRIVE);
         $client->setAccessToken($accessToken);
         $driveService = new Drive($client);
 
         $main_folder_id = \Config('services.google.folder_id');
-
-        //dd($main_folder_id);
-
         $oficina = session('sessionoficina');
         $oficina_folder_id = $this->getFolderId($oficina, $main_folder_id, $driveService);
 
         $tipo_tramite_folder = $request->get('cbxtramite');
-        $tipo_tramite_folder_id = $this->getFolderId($tipo_tramite_folder, $oficina_folder_id, $driveService);
+        //$tipo_tramite_folder_id = $this->getFolderId($tipo_tramite_folder, $oficina_folder_id, $driveService);
+        $tipo_tramite_folder_id = $this->getFolderId($nombre, $oficina_folder_id, $driveService);
 
         $time_input = strtotime($request->get('txtgestion'));
         $gestion_folder = date('Y', $time_input);
         $gestion_folder_id = $this->getFolderId($gestion_folder, $tipo_tramite_folder_id, $driveService);
-
 
         $mes_folder = date('m', $time_input);
         $mes_folder_id = $this->getFolderId($mes_folder, $gestion_folder_id, $driveService);
@@ -143,15 +156,16 @@ class CVehiculo extends Controller
         $tomo_folder = $request->get('txtnumero');
         $tomo_folder_id = $this->getFolderId($tomo_folder, $mes_folder_id, $driveService);
 
-        
+
         $empastado = new Empastado();
         $empastado->codigo = Str::random(5);
         $empastado->numero = $request->get('txtnumero');
         $empastado->fecha = $request->get('txtgestion');
-        $empastado->idpersona = $sessionidusuario;
+        $empastado->idpersona = 100;
         $empastado->idtramite = $request->get('cbxtramite');
         $empastado->idestante = $request->get('cbxestante');
         $empastado->idpasillo = $request->get('cbxpasillo');
+        $empastado->google_folder_id = $tomo_folder_id;
         $empastado->save();
 
         $maxidfolder = DB::select('SELECT MAX(e.idempastado) AS idempastado FROM colcapir_bddsisgamc.empastado e WHERE e.estado=1');
@@ -165,8 +179,9 @@ class CVehiculo extends Controller
         $vehiculo->placas = $request->get('txtplacas');
         $vehiculo->fechasingreso = $request->get('txtfechasingreso');
         $vehiculo->save();
-        return redirect('/Vehiculo');
         // crear carpetas y subcarpetas
+
+        return redirect('/Vehiculo');
     }
 
     /**
@@ -186,20 +201,20 @@ class CVehiculo extends Controller
      * @param  \App\Models\Vehiculo  $vehiculo
      * @return \Illuminate\Http\Response
      */
-    public function edit($idempastado)
+    public function edit($id)
     {
-        $queryempastado=Empastado::findOrFail($idempastado); 
-        $queryvehiculo=Vehiculo::findOrFail($idempastado);
-
-        $tramite=DB::SELECT('SELECT t.idtramite,t.nombre FROM colcapir_bddsisgamc.tramite t 
-        WHERE t.estado=1 ORDER BY t.nombre DESC');
-
-        $estante=DB::SELECT('SELECT e.idestante,CONCAT(e.nombre," BANDEJA: ",e.fila) AS estante,e.estado
-        FROM colcapir_bddsisgamc.estante e WHERE e.estado=1 ORDER BY e.nombre DESC');
-
-        $pasillo=DB::SELECT('SELECT p.idpasillo,p.pasillo,p.idoficina FROM colcapir_bddsisgamc.pasillo p
-        WHERE p.estado=1 ORDER BY p.pasillo DESC');
-        return view('Vehiculo.edit', ['allv' => $queryempastado,'qv' => $queryvehiculo,'tramite'=>$tramite,'estante'=>$estante,'pasillo'=>$pasillo]);
+        $empastado = Empastado::find($id);
+        $vehiculo = Vehiculo::find($id);
+        $tramite=DB::table('tramite')
+        ->where('tramite.estado', '=', 1 )
+        ->get();
+        $estante=DB::table('estante')
+        ->where('estante.estado', '=', 1 )
+        ->get();
+        $pasillo=DB::table('pasillo')
+        ->where('pasillo.estado', '=', 1 )
+        ->get();
+        return view('Vehiculo.edit', ['empastado' => $empastado,'vehiculo' => $vehiculo,'tramite' => $tramite,'estante' => $estante,'pasillo' => $pasillo]);
     }
 
     /**
@@ -209,9 +224,14 @@ class CVehiculo extends Controller
      * @param  \App\Models\Vehiculo  $vehiculo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Vehiculo $vehiculo)
+    public function update(Request $request, $idempastado)
     {
-        //
+
+        $empastado = Empastado::find($idempastado);
+        $empastado->numero = $request->get('txtnumero');
+        $empastado->fecha = $request->get('txtgestion');
+        $empastado->update();
+        return redirect('/Vehiculo');
     }
 
     /**
@@ -220,9 +240,12 @@ class CVehiculo extends Controller
      * @param  \App\Models\Vehiculo  $vehiculo
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Vehiculo $vehiculo)
+    public function destroy($vehiculoId)
     {
-        //
+
+        $vehiculo = Vehiculo::find($vehiculoId);
+        $vehiculo->delete();
+        return redirect('/Vehiculo');
     }
 
 }

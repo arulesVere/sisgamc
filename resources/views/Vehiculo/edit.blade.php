@@ -3,13 +3,13 @@
         <div class="page-breadcrumb">
           <div class="row">
             <div class="col-12 d-flex no-block align-items-center">
-              <h4 class="page-title">DATOS</h4>
+              <h4 class="page-title">EDITAR REGISTRO</h4>
               <div class="ms-auto text-end">
                 <nav aria-label="breadcrumb">
                   <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Usuario</a></li>
+                    <li class="breadcrumb-item"><a href="#">Ingresos</a></li>
                     <li class="breadcrumb-item active" aria-current="page">
-                    Edicion
+                    Registrar
                     </li>
                   </ol>
                 </nav>
@@ -30,23 +30,23 @@
           <div class="row">
             <div class="col-md-12">
               <div class="card">
-                <form class="form-horizontal" action="/Empastado/{{$allv->idempastado}}" method="Post" data-parsley-validate>
-                @csrf    
-				        @method('PUT')
+              <form class="form-horizontal" action="/Vehiculo/{{$empastado->idempastado}}" method="Post"  enctype="multipart/form-data">
+                  @csrf
+                  @method('PUT') 
                   <div class="card-body">
-                    <h4 class="card-title">ACTUALIZAR USUARIO:</h4>
+                    <h4 class="card-title">INGRESE DATOS:</h4>
                     <div class="form-group row">
                       <label
                         for="fname"
                         class="col-sm-3 text-end control-label col-form-label"
-                        >N° TOMO:</label
+                        >NÚMERO DE TOMO:</label
                       >
                       <div class="col-sm-6">
                         <input
                           type="text"
                           class="form-control"
                           id="fname"
-                          placeholder="N° TOMO" value="{{$allv->numero}}" name="txtnumero"
+                          placeholder="N° TOMO" value="{{$empastado->numero}}" name="txtnumero"
                         />
                       </div>
                     </div>
@@ -58,10 +58,10 @@
                       >
                       <div class="col-sm-6">
                         <input
-                          type="text"
+                          type="date"
                           class="form-control"
                           id="lname"
-                          placeholder="INGRESE PRIMER APELLIDO" value="{{$allv->fecha}}" name="txtgestion"
+                          placeholder="INGRESE GESTIÓN"  value="{{$empastado->fecha}}" name="txtgestion"
                         />
                       </div>
                     </div>
@@ -76,7 +76,7 @@
                           type="text"
                           class="form-control"
                           id="lname"
-                          placeholder="INGRESE SEGUNDO APELLIDO" value="{{$qv->carpetas}}" name="txtcarpetas"
+                          placeholder="INGRESE CARPETAS EN EL TOMO" value="{{$vehiculo->carpetas}}" name="txtcarpetas"
                         />
                       </div>
                     </div>
@@ -91,7 +91,7 @@
                           type="text"
                           class="form-control"
                           id="lname"
-                          placeholder="INGRESE CARNET" value="{{$qv->total}}" name="txttotal"
+                          placeholder="TOTAL CARPETAS" name="txttotal" value="{{$vehiculo->total}}"
                         />
                       </div>
                     </div>
@@ -102,7 +102,7 @@
                         >CERTIFICACIONES DE PROPIEDAD</label
                       >
                       <div class="col-sm-6">
-                       <textarea class="form-control" rows="3" cols="40" value="{{$qv->certificaciones}}" name="txtcertificaciones"></textarea>
+                        <textarea class="form-control" rows="3" cols="40" name="txtcertificaciones">{{$vehiculo->certificaciones}}</textarea>
                       </div>
                     </div>
                     <div class="form-group row">
@@ -111,8 +111,8 @@
                         class="col-sm-3 text-end control-label col-form-label"
                         >PLACAS</label
                       >
-                      <div class="col-md-6">
-                       <textarea class="form-control" rows="3" cols="40" value="{{$qv->placas}}" name="txtplacas"></textarea>
+                      <div class="col-sm-6">
+                        <textarea class="form-control" rows="3" cols="40" name="txtplacas">{{$vehiculo->placas}}</textarea>
                       </div>
                     </div>
                     <div class="form-group row">
@@ -122,7 +122,7 @@
                         >FECHAS DE INGRESO</label
                       >
                       <div class="col-sm-6">
-                        <textarea class="form-control" rows="3" cols="40" value="{{$qv->fechasingreso}}" name="txtfechasingreso"></textarea>
+                        <textarea class="form-control" rows="3" cols="40" name="txtfechasingreso">{{$vehiculo->fechasingreso}}</textarea>
                       </div>
                     </div>
                     <div class="form-group row">
@@ -133,12 +133,12 @@
                       >
                       <div class="col-sm-6">
                         <select class="select2 form-select "
-                          style="height: 36px; width: 100%" name="cbxoficina">
+                          style="height: 36px; width: 100%" name="cbxtramite">
                           <option>SELECCIONE UNA OPCION</option>
                          @foreach($tramite as $tra)
-                          <option value="{{$tra->idtramite}}" @if($tra->idtramite==$allv->idtramite) selected=true @endif>
-                          {{$tra->nombre}}  
-                          </option>
+                         <option value="{{$tra->idtramite}}"  
+                          @if($tra->idtramite == $empastado->idtramite) selected=true @endif
+                          > {{$tra->nombre}} </option>
                          @endforeach
                         </select>
                       </div>
@@ -151,12 +151,12 @@
                       >
                       <div class="col-sm-6">
                         <select class="select2 form-select "
-                          style="height: 36px; width: 100%" name="cbxoficina">
+                          style="height: 36px; width: 100%" name="cbxestante">
                           <option>SELECCIONE UNA OPCION</option>
                          @foreach($estante as $est)
-                          <option value="{{$est->idestante}}" @if($est->idestante==$allv->idestante) selected=true @endif>
-                          {{$est->estante}}  
-                          </option>
+                         <option value="{{$est->idestante}}"  
+                          @if($est->idestante == $empastado->idestante) selected=true @endif
+                          > {{$est->nombre}} </option>
                          @endforeach
                         </select>
                       </div>
@@ -169,12 +169,12 @@
                       >
                       <div class="col-sm-6">
                         <select class="select2 form-select "
-                          style="height: 36px; width: 100%" name="cbxoficina">
+                          style="height: 36px; width: 100%" name="cbxpasillo">
                           <option>SELECCIONE UNA OPCION</option>
                          @foreach($pasillo as $pas)
-                          <option value="{{$pas->idpasillo}}" @if($pas->idpasillo==$allv->idpasillo) selected=true @endif>
-                          {{$pas->pasillo}}  
-                          </option>
+                         <option value="{{$pas->idpasillo}}"  
+                          @if($pas->idpasillo == $empastado->idpasillo) selected=true @endif
+                          > {{$pas->pasillo}} </option>
                          @endforeach
                         </select>
                       </div>
@@ -193,7 +193,6 @@
                 </form>
               </div>
               
-           
           </div>
           <!-- ============================================================== -->
           <!-- End PAge Content -->
@@ -219,5 +218,4 @@
         <!-- End footer -->
         <!-- ============================================================== -->
       </div>
-
       @endsection

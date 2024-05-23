@@ -2,7 +2,7 @@
 <div class="modal fade" id="archivoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
    <form class="form-horizontal" action="/Archivo" method="Post" enctype="multipart/form-data">
-    @csrf  
+    @csrf
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="exampleModalLabel">NUEVO ARCHIVO</h1>
@@ -18,6 +18,13 @@
                   >SUBIR ARCHIVO:</label
                   >
                   <div class="col-md-9">
+                        <input
+                              type="text"
+                              class="custom-file-input"
+                              id="google_folder_id" name="google_folder_id"
+                              value="{{$google_folder_id}}"
+                              hidden
+                          />
                       <div class="custom-file">
                           <input
                               type="file"
@@ -44,7 +51,7 @@
         <button type="submit" class="btn btn-primary">GUARDAR</button>
       </div>
     </div>
-  
+
    </form>
   </div>
 </div>

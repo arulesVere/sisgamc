@@ -229,8 +229,6 @@ class CVehiculo extends Controller
                     ]);
 
                 }
-
-                $archivos->update(['google_folder_id' => $tomo_folder_id]);
             }
 
         }

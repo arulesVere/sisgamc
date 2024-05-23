@@ -79,7 +79,7 @@
                           <td>
                             <a href="/Archivo/?google_folder_id={{$allv->google_folder_id}}"  class="btn btn-info btn-sm"><i class="mdi mdi-file"></i></a>
                             <a href="/Vehiculo/{{$allv->idempastado}}/edit" class="btn btn-secondary btn-sm"><i class="mdi mdi-pencil"></i></a>
-                            <a href="/Vehiculo/{{$allv->idempastado}}/delete" data-bs-toggle="modal" data-bs-target="#deleteModal{{$allv->idempastado}}" class="btn btn-danger btn-sm"><i class="mdi mdi-delete"></i></a>
+                            <a href="/Vehiculo/{{$allv->idempastado}}/delete" data-bs-toggle="modal" data-bs-target="#deleteVehiculoModal{{$allv->idempastado}}" class="btn btn-danger btn-sm"><i class="mdi mdi-delete"></i></a>
                           </td>
                         </tr>
                         @include('Vehiculo.delete')

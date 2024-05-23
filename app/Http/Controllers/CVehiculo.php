@@ -130,8 +130,8 @@ class CVehiculo extends Controller
         
         $fecha = Carbon::parse($request->get('txtgestion'));
         $mes = $meses[($fecha->format('n')) - 1];
-        dd($fecha);
-        //dd($nombret);
+        //dd($mes);
+        
 
         $client = new Client();
         $client->addScope(Drive::DRIVE);

@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Estante;
-use App\Models\Pasillo;
-use App\Models\Tramite;
+use App\Models\Archivo;
 use App\Models\Vehiculo;
 use App\Models\Empastado;
 use Illuminate\Http\Request;
@@ -204,8 +202,39 @@ class CVehiculo extends Controller
      */
     public function update(Request $request, $idempastado)
     {
+        $output = new \Symfony\Component\Console\Output\ConsoleOutput();
         $tomo_folder_id = $this->getTomoFolderId($request);
+
         $empastado = Empastado::find($idempastado);
+        if ($tomo_folder_id != $empastado->google_folder_id) {
+            $archivos = Archivo::where('google_folder_id', '=', $empastado->google_folder_id);
+            if (!empty($archivos)) {
+                $accessToken = session('googletoken');
+                $client = new Client();
+                $client->addScope(Drive::DRIVE);
+                $client->setAccessToken($accessToken);
+                $driveService = new Drive($client);
+
+                foreach ($archivos->get() as $archivo) {
+                    $output->writeln($archivo->google_file_id);
+                    $updateMetadata = new Drive\DriveFile(
+                        ['parents' => [$tomo_folder_id]]
+                    );
+                    $result = $driveService->files
+                        ->copy($archivo->google_file_id, $updateMetadata);
+                    $driveService->files->delete($archivo->google_file_id);
+                    Archivo::find($archivo->idarchivo)->update([
+                        'google_folder_id' => $tomo_folder_id,
+                        'google_file_id' => $result->id
+                    ]);
+
+                }
+
+                $archivos->update(['google_folder_id' => $tomo_folder_id]);
+            }
+
+        }
+
         $empastado->numero = $request->get('txtnumero');
         $empastado->fecha = $request->get('txtgestion');
         $empastado->idtramite = $request->get('cbxtramite');

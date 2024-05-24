@@ -18,25 +18,6 @@ use Google\Service\Drive;
 
 class CArchivo extends Controller
 {
-    public $google_folder_id = '';
-    private function token()
-    {
-        $client_id = \Config('services.google.client_id');
-        $client_secret = \Config('services.google.client_secret');
-        $refresh_token = \Config('services.google.refresh_token');
-
-        $response = Http::post('https://oauth2.googleapis.com/token', [
-
-            'client_id' => $client_id,
-            'client_secret' => $client_secret,
-            'refresh_token' => $refresh_token,
-            'grant_type' => 'refresh_token',
-
-        ]);
-
-        $access_token = json_decode((string) $response->getBody(), true)['access_token'];
-        return $access_token;
-    }
     /**
      * Display a listing of the resource.
      *
@@ -72,7 +53,7 @@ class CArchivo extends Controller
      */
     public function store(Request $request)
     {
-        $accessToken = $this->token();
+        $accessToken = session('googletoken');
         $client = new Client();
         $client->addScope(Drive::DRIVE);
         $client->setAccessToken($accessToken);
@@ -160,7 +141,7 @@ class CArchivo extends Controller
         $google_folder_id = $archivo->google_folder_id;
         $archivo->delete();
 
-        $accessToken = $this->token();
+        $accessToken = session('googletoken');
         $client = new Client();
         $client->addScope(Drive::DRIVE);
         $client->setAccessToken($accessToken);

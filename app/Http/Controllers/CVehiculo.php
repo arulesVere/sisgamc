@@ -83,6 +83,11 @@ class CVehiculo extends Controller
             ->get();
         $nombre = $nombret[0]->nombre;
 
+        $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+
+        $fecha = Carbon::parse($request->get('txtgestion'));
+        $mes = $meses[($fecha->format('n')) - 1];
+
         $tipo_tramite_folder_id = $this->getFolderId($nombre, $oficina_folder_id, $driveService);
 
         $time_input = strtotime($request->get('txtgestion'));
@@ -90,7 +95,10 @@ class CVehiculo extends Controller
         $gestion_folder_id = $this->getFolderId($gestion_folder, $tipo_tramite_folder_id, $driveService);
 
         $mes_folder = date('m', $time_input);
-        $mes_folder_id = $this->getFolderId($mes_folder, $gestion_folder_id, $driveService);
+
+        //$mes_folder_id = $this->getFolderId($mes_folder, $gestion_folder_id, $driveService);
+        
+        $mes_folder_id = $this->getFolderId($mes, $gestion_folder_id, $driveService);
 
         $tomo_folder = $request->get('txtnumero');
         return $this->getFolderId($tomo_folder, $mes_folder_id, $driveService);
@@ -127,19 +135,14 @@ class CVehiculo extends Controller
      */
     public function store(Request $request)
     {
-        $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
-
-        $fecha = Carbon::parse($request->get('txtgestion'));
-        $mes = $meses[($fecha->format('n')) - 1];
-        //dd($mes);
-
+        
         $tomo_folder_id = $this->getTomoFolderId($request);
-
+        $sessionidusuario=session('sessionidusuario');
         $empastado = new Empastado();
         $empastado->codigo = Str::random(5);
         $empastado->numero = $request->get('txtnumero');
         $empastado->fecha = $request->get('txtgestion');
-        $empastado->idpersona = 100;
+        $empastado->idpersona = $sessionidusuario;
         $empastado->idtramite = $request->get('cbxtramite');
         $empastado->idestante = $request->get('cbxestante');
         $empastado->idpasillo = $request->get('cbxpasillo');

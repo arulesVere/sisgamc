@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Finanzas;
-use App\Models\Folder;
+use App\Models\Empastado;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use File;
@@ -12,6 +12,8 @@ use Storage;
 use Session;
 use Alert;
 use Carbon\Carbon;
+use Google\Service\Drive;
+use Google\Client;
 
 class CFinanzas extends Controller
 {
@@ -20,20 +22,106 @@ class CFinanzas extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function getFolderId($folderName, $folderId, $driveService)
+    {
+        try {
+            $pageToken = null;
+
+            $query = "parents in '" . $folderId . "' and mimeType='application/vnd.google-apps.folder'";
+            $response = $driveService->files->listFiles(
+                array(
+                    'q' => $query,
+                    'spaces' => 'drive',
+                    'pageToken' => $pageToken,
+                    'fields' => 'nextPageToken, files(id, name)',
+                )
+            );
+            foreach ($response->files as $file) {
+                if ($file->name == $folderName) {
+                    return $file->id;
+                }
+            }
+
+            $fileMetadata = new Drive\DriveFile(
+                array(
+                    'parents' => array($folderId),
+                    'name' => $folderName,
+                    'mimeType' => 'application/vnd.google-apps.folder'
+                )
+            );
+            $file = $driveService->files->create(
+                $fileMetadata,
+                array(
+                    'fields' => 'id'
+                )
+            );
+
+
+            return $file->id;
+
+        } catch (Exception $e) {
+            echo "Error Message: " . $e;
+        }
+    }
+
+    private function getTomoFolderId(Request $request)
+    {
+
+        $accessToken = session('googletoken');
+
+        $client = new Client();
+        $client->addScope(Drive::DRIVE);
+        $client->setAccessToken($accessToken);
+        $driveService = new Drive($client);
+
+        $main_folder_id = \Config('services.google.folder_id');
+        $oficina = session('sessionoficina');
+        $oficina_folder_id = $this->getFolderId($oficina, $main_folder_id, $driveService);
+
+        $tipo_tramite_folder = $request->get('cbxtramite');
+        $nombret = DB::table('tramite')
+            ->select('tramite.nombre as nombre')
+            ->where('tramite.idtramite', '=', [$request->get('cbxtramite')])
+            ->where('tramite.estado', '=', 1)
+            ->get();
+        $nombre = $nombret[0]->nombre;
+
+        $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+
+        $fecha = Carbon::parse($request->get('txtgestion'));
+        $mes = $meses[($fecha->format('n')) - 1];
+
+        $tipo_tramite_folder_id = $this->getFolderId($nombre, $oficina_folder_id, $driveService);
+
+        $time_input = strtotime($request->get('txtgestion'));
+        $gestion_folder = date('Y', $time_input);
+        $gestion_folder_id = $this->getFolderId($gestion_folder, $tipo_tramite_folder_id, $driveService);
+
+        $mes_folder = date('m', $time_input);
+
+        //$mes_folder_id = $this->getFolderId($mes_folder, $gestion_folder_id, $driveService);
+        
+        $mes_folder_id = $this->getFolderId($mes, $gestion_folder_id, $driveService);
+
+        $tomo_folder = $request->get('txtnumero');
+        return $this->getFolderId($tomo_folder, $mes_folder_id, $driveService);
+    }
     public function index()
     {
         $sessionidusuario=session('sessionidusuario');
         $nombreoficina=session('sessionoficina');
 
-        $allfolderbyfinanzas=DB::select('SELECT e.idempastado,e.codigo,e.numero,e.idpersona,t.nombre AS tramite,e.estado,e.fecha,fi.nrocomprobante,
-        CONCAT(est.nombre," - ",est.fila) AS estante
-        FROM colcapir_bddsisgamc.empastado e 
-        INNER JOIN colcapir_bddsisgamc.tramite t ON t.idtramite=e.idtramite
-        INNER JOIN colcapir_bddsisgamc.finanzas fi ON fi.idempastado=e.idempastado
-        INNER JOIN colcapir_bddsisgamc.estante est ON est.idestante=e.idestante
-        INNER JOIN colcapir_bddsisgamc.pasillo p ON p.idpasillo=e.idpasillo
-        WHERE e.estado=1  AND e.idpersona="'. $sessionidusuario.'" ORDER BY numero ASC');
-        return view('Finanzas.index', ['querybyfinanzas'=>$allfolderbyfinanzas]);
+        $allfinanzas = DB::table('empastado')
+        ->join('finanzas', 'empastado.idempastado', '=', 'finanzas.idempastado')
+        ->join('tramite', 'empastado.idtramite', '=', 'tramite.idtramite')
+        ->join('estante', 'empastado.idestante', '=', 'estante.idestante')
+        ->join('pasillo', 'empastado.idpasillo', '=', 'pasillo.idpasillo')
+        ->select('empastado.*')
+        ->where('empastado.estado', '=', 1)
+        ->get()
+        ->all();
+        //dd($allfinanzas);
+       return view('Finanzas.index', ['querybyfinanzas'=>$allfinanzas]);
     }
     /**
      * Show the form for creating a new resource.
@@ -59,33 +147,27 @@ class CFinanzas extends Controller
      */
     public function store(Request $request)
     {
-        $sessionidusuario=session('sessionidusuario');
-    
-       
-            
-            $folder->solicitante="SIN SOLICITANTE";
-            $folder->carnet="SIN C.I.";
-            $folder->idtramite=$request->get('cbxtramite');
-            $folder->idestante=$request->get('cbxestante');
-
-            $nombret=DB::select('SELECT nombre AS nombretramite FROM colcapir_bddsisgamc.tramite WHERE idtramite=?',[$request->get('cbxtramite')]);
-            $nombre=$nombret[0]->nombretramite;
-            $path=($directorio.'/'.$nombrecompleto.'/'.$nombre.'/'.$a単o.'/'.$mes.'/'.$numero);
-            
-                
-                    File::makeDirectory($path, 0777, true, true);
-                            $folder->save();
-                            $maxidfolder=DB::select('SELECT MAX(f.idfolder) AS idfolder FROM colcapir_bddsisgamc.folder f WHERE f.estado=1');
-                            $finanzas=new Finanzas();
-                            $finanzas->idfolder=$maxidfolder[0]->idfolder;
-                            $finanzas->nrocomprobante=$request->get('txtcomprobante');
-                            $finanzas->save();
-                            Alert::success('EXITO', 'REGISTRO EXITOSO');
-                            return redirect('/Finanzas');  
+          $sessionidusuario=session('sessionidusuario');
+          $tomo_folder_id = $this->getTomoFolderId($request);
+          $empastado = new Empastado();
+          $empastado->codigo = Str::random(5);
+          $empastado->numero = $request->get('txtnumero');
+          $empastado->fecha = $request->get('txtgestion');
+          $empastado->idpersona = $sessionidusuario;
+          $empastado->idtramite = $request->get('cbxtramite');
+          $empastado->idestante = $request->get('cbxestante');
+          $empastado->idpasillo = $request->get('cbxpasillo');
+          $empastado->google_folder_id = $tomo_folder_id;
+          $empastado->save();
+                         
+          $maxidfolder=DB::select('SELECT MAX(e.idempastado) AS idempastado FROM colcapir_bddsisgamc.empastado e WHERE e.estado=1');
+          $finanzas=new Finanzas();
+          $finanzas->idempastado=$maxidfolder[0]->idempastado;
+          $finanzas->nrocomprobante=$request->get('txtcomprobantes');
+          $finanzas->save();
+          Alert::success('EXITO', 'REGISTRO EXITOSO');
+          return redirect('/Finanzas');  
                         
-                
-               
-       
     }
 
     /**

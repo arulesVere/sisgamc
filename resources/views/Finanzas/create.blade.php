@@ -68,21 +68,6 @@
                       <label
                         for="lname"
                         class="col-sm-3 text-end control-label col-form-label"
-                        >CARPETAS EN EL TOMO</label
-                      >
-                      <div class="col-sm-6">
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="lname"
-                          placeholder="INGRESE CARPETAS EN EL TOMO" name="txtcarpetas"
-                        />
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label
-                        for="lname"
-                        class="col-sm-3 text-end control-label col-form-label"
                         >NRO. COMPROBANTES</label
                       >
                       <div class="col-sm-6">
@@ -103,7 +88,7 @@
                       >
                       <div class="col-sm-6">
                         <select class="select2 form-select "
-                          style="height: 36px; width: 100%" name="cbxoficina">
+                          style="height: 36px; width: 100%" name="cbxtramite">
                           <option>SELECCIONE UNA OPCION</option>
                          @foreach($qtramite as $tra)
                          <option value="{{$tra->idtramite}}">{{$tra->nombre}}</option>
@@ -119,7 +104,7 @@
                       >
                       <div class="col-sm-6">
                         <select class="select2 form-select "
-                          style="height: 36px; width: 100%" name="cbxoficina">
+                          style="height: 36px; width: 100%" name="cbxestante">
                           <option>SELECCIONE UNA OPCION</option>
                          @foreach($qestante as $est)
                          <option value="{{$est->idestante}}">{{$est->nombre}}</option>
@@ -135,7 +120,7 @@
                       >
                       <div class="col-sm-6">
                         <select class="select2 form-select "
-                          style="height: 36px; width: 100%" name="cbxoficina">
+                          style="height: 36px; width: 100%" name="cbxpasillo">
                           <option>SELECCIONE UNA OPCION</option>
                          @foreach($qpasillo as $pas)
                          <option value="{{$pas->idpasillo}}">{{$pas->pasillo}}</option>
